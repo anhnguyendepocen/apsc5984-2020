@@ -2,7 +2,7 @@
 title: "Overview of course"
 subtitle: "APSC 5984/20816 Complex Trait Genomics"
 author: "Gota Morota"
-date: "2020/1/22"
+date: "1/22/2020"
 output:
   xaringan::moon_reader:
     lib_dir: libs
