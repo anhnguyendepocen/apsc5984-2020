@@ -45,36 +45,9 @@ What we will cover
 - hands-on analysis of simulated or real genomic data
 - no mideterm exams
 - final exam 
-- 15 minutes presentation 
+- biweekly assignments
+- 15-30 minutes presentation 
 - R + RStudio 
-
-
----
-# Prediction vs. Inference - 1
-- Complex traits
-    - large number of genes with small effects 
-    - genetics and environments
-
-- Inference
-    - effect of allele substitution
-    - variance component estimation
-  
-- Prediction 
-    - prediction of yet-to-be observed phenotypes
-    - genomic selection
-
-
----
-# Prediction vs. Inference - 2
-<div align="center">
-<img src="Lo2015PNAS.png" width=900 height=400>
-</div>
-
-* [http://www.pnas.org/content/112/45/13892.abstract
-](http://www.pnas.org/content/112/45/13892.abstract
-)
-
-
 
 
 
