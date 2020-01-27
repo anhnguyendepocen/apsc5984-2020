@@ -1,0 +1,136 @@
+---
+title: "Ordinary least squares"
+author: "Gota Morota<br>[<font color=‘white’>http://morotalab.org/</font>](http://morotalab.org/)"
+date: "1/27/2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Background
+This exercise illustrates how to perform ordinary least squares (OLS) to identify which SNPs are significantly influencing phenotypes. We will ignore population structure in this example. 
+
+
+## Install and load R packages
+First, we are going to use the `maize` data included in the [synbreedData](https://cran.r-project.org/web/packages/synbreedData/index.html) package. Learn more about the [Synbreed project](http://www.synbreed.tum.de/) and [synbreed R packages](http://synbreed.r-forge.r-project.org/). 
+```{r, eval=FALSE, echo=TRUE}
+# install.packages("synbreed")
+# install.packages("synbreedData")
+library(synbreed)
+library(synbreedData)
+data(maize)
+?maize
+summary(maize)
+```
+
+## Read data
+```{r, eval=FALSE, echo=TRUE}
+rm(list=ls()) # delete the objects in the current environment 
+
+names(maize)
+y1 <- as.vector(maize$pheno) # phenotype vector 
+intercept <- rep(1, length(y1)) # intercept vector 
+W1a <- cbind(intercept, maize$geno[,1:100]) # the intercept and the SNP matrix including the first 100 SNPs
+
+length(y1) # 12150
+dim(W1a) # 1250 101
+```
+
+## Fitting OLS using the matrix multiplication operation
+```{r, eval=FALSE, echo=TRUE}
+?solve # help page for the solve() function
+?t # help page for the t() function
+
+fit1a <- solve(t(W1a) %*% W1a) %*% t(W1a) %*% y1
+head(fit1a) # estimates of the intercept and the first five SNP effects
+```
+
+## lm() function
+We will use the `lm()` function to fit OLS and estimate fixed SNP effect coefficients. The summary() function summarizes a model fit.
+```{r, eval=FALSE, echo=TRUE}
+?lm # help page for the lm() function?
+
+summary(lm(y1 ~ -1 + W1a))
+names(summary(lm(y1 ~ -1 + W1a))) # names of accessible lists
+summary(lm(y1 ~ -1 + W1a))$coef # return only coefficients
+head(summary(lm(y1 ~ -1 + W1a))$coef) # return the first siz coefficients
+
+head(lm.fit(W1a, y1)$coef) # fit the model using the lm.fit() function
+```
+
+
+## t-values 
+How to obtain t-values in the third column?  
+```{r, eval=FALSE, echo=TRUE}
+t0 <- 169.655798 / 16.796230 
+t1 <- 2.054498 /  1.362064
+t2 <- 8.685180 / 8.942172
+t3 <- -7.896607 /  9.480402
+t4 <- 4.005036  / 3.790624
+t5 <- -3.425773 /  1.569304
+```
+
+
+## p-values 
+How to obtain p-values in the fourth column?  
+```{r, eval=FALSE, echo=TRUE}
+my.df <- 1250 - 1 - 100
+
+2*pt(q=t0, df=my.df, lower=FALSE) # intercept
+2*pt(q=t1, df=my.df, lower=FALSE) # M1
+2*pt(q=-t2, df=my.df, lower=TRUE) # M2
+2*pt(q=t3, df=my.df, lower=FALSE) # M3
+2*pt(q=t4, df=my.df, lower=TRUE) # M4
+2*pt(q=t5, df=my.df, lower=TRUE) # M5
+```
+
+
+
+## Fitting the whole markers as fixed
+```{r, eval=FALSE, echo=TRUE}
+W1b <- cbind(intercept, maize$geno) # the intercept and the whole SNP matrix 
+dim(W1b) # 1250 1117
+
+# use the solve() function
+fit1b <- solve(t(W1b) %*% W1b) %*% t(W1b) %*% y1
+
+# use the lm() function
+summary(lm(y1 ~ -1 + W1b)) # check the warning 
+```
+
+
+## Load the cattle data
+```{r, eval=FALSE, echo=TRUE}
+data(cattle)
+?cattle
+dim(cattle$geno)
+
+y2 <- cattle$pheno[,1,1] 
+set.seed(100)
+cattle2 <- codeGeno(cattle,impute=TRUE,impute.type="random", reference.allele = "minor")
+W2 <- cattle2$geno
+
+intercept2 <- rep(1, length(y2)) # intercept vector 
+W2 <- cbind(intercept2, cattle2$geno) # the intercept and the SNP matrix 
+
+length(y2) # 500
+dim(W2) # 500 7250 + 1
+```
+
+
+## Fit OLS to the cattle data
+What happens when we fit OLS to the data with $n < m$?
+```{r, eval=FALSE, echo=TRUE}
+fit2 <- solve(t(W2) %*% W2) %*% t(W2) %*% y2  
+
+head(summary(lm(y2 ~ -1 + W2))$coef) 
+```
+
+
+
