@@ -128,7 +128,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="install-and-load-r-packages" class="section level2">
 <h2>Install and load R packages</h2>
 <p>First, we are going to use the <code>maize</code> data included in the <a href="https://cran.r-project.org/web/packages/synbreedData/index.html">synbreedData</a> package. Learn more about the <a href="http://www.synbreed.tum.de/">Synbreed project</a> and <a href="http://synbreed.r-forge.r-project.org/">synbreed R packages</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;synbreed&quot;)</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">ls</span>()) <span class="co"># delete the objects in the current environment </span>
+
+<span class="co"># install.packages(&quot;synbreed&quot;)</span>
 <span class="co"># install.packages(&quot;synbreedData&quot;)</span>
 <span class="kw">library</span>(synbreed)
 <span class="kw">library</span>(synbreedData)
@@ -138,14 +140,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="read-data" class="section level2">
 <h2>Read data</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">ls</span>()) <span class="co"># delete the objects in the current environment </span>
-
-<span class="kw">names</span>(maize)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(maize)
 y1 &lt;-<span class="st"> </span><span class="kw">as.vector</span>(maize<span class="op">$</span>pheno) <span class="co"># phenotype vector </span>
 intercept &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>, <span class="kw">length</span>(y1)) <span class="co"># intercept vector </span>
 W1a &lt;-<span class="st"> </span><span class="kw">cbind</span>(intercept, maize<span class="op">$</span>geno[,<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]) <span class="co"># the intercept and the SNP matrix including the first 100 SNPs</span>
 
-<span class="kw">length</span>(y1) <span class="co"># 12150</span>
+<span class="kw">length</span>(y1) <span class="co"># 1250</span>
 <span class="kw">dim</span>(W1a) <span class="co"># 1250 101</span></code></pre></div>
 </div>
 <div id="fitting-ols-using-the-matrix-multiplication-operation" class="section level2">
@@ -154,7 +154,8 @@ W1a &lt;-<span class="st"> </span><span class="kw">cbind</span>(intercept, maize
 ?t <span class="co"># help page for the t() function</span>
 
 fit1a &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(W1a) <span class="op">%*%</span><span class="st"> </span>W1a) <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(W1a) <span class="op">%*%</span><span class="st"> </span>y1
-<span class="kw">head</span>(fit1a) <span class="co"># estimates of the intercept and the first five SNP effects</span></code></pre></div>
+<span class="kw">head</span>(fit1a) <span class="co"># estimates of the intercept and the first five SNP effects</span>
+<span class="kw">tail</span>(fit1a)</code></pre></div>
 </div>
 <div id="lm-function" class="section level2">
 <h2>lm() function</h2>
@@ -185,9 +186,9 @@ t5 &lt;-<span class="st"> </span><span class="op">-</span><span class="fl">3.425
 
 <span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="dt">q=</span>t0, <span class="dt">df=</span>my.df, <span class="dt">lower=</span><span class="ot">FALSE</span>) <span class="co"># intercept</span>
 <span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="dt">q=</span>t1, <span class="dt">df=</span>my.df, <span class="dt">lower=</span><span class="ot">FALSE</span>) <span class="co"># M1</span>
-<span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="dt">q=</span><span class="op">-</span>t2, <span class="dt">df=</span>my.df, <span class="dt">lower=</span><span class="ot">TRUE</span>) <span class="co"># M2</span>
-<span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="dt">q=</span>t3, <span class="dt">df=</span>my.df, <span class="dt">lower=</span><span class="ot">FALSE</span>) <span class="co"># M3</span>
-<span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="dt">q=</span>t4, <span class="dt">df=</span>my.df, <span class="dt">lower=</span><span class="ot">TRUE</span>) <span class="co"># M4</span>
+<span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="dt">q=</span>t2, <span class="dt">df=</span>my.df, <span class="dt">lower=</span><span class="ot">FALSE</span>) <span class="co"># M2</span>
+<span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="dt">q=</span>t3, <span class="dt">df=</span>my.df, <span class="dt">lower=</span><span class="ot">TRUE</span>) <span class="co"># M3</span>
+<span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="dt">q=</span>t4, <span class="dt">df=</span>my.df, <span class="dt">lower=</span><span class="ot">FALSE</span>) <span class="co"># M4</span>
 <span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="dt">q=</span>t5, <span class="dt">df=</span>my.df, <span class="dt">lower=</span><span class="ot">TRUE</span>) <span class="co"># M5</span></code></pre></div>
 </div>
 <div id="fitting-the-whole-markers-as-fixed" class="section level2">
@@ -207,7 +208,7 @@ fit1b &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="k
 ?cattle
 <span class="kw">dim</span>(cattle<span class="op">$</span>geno)
 
-y2 &lt;-<span class="st"> </span>cattle<span class="op">$</span>pheno[,<span class="dv">1</span>,<span class="dv">1</span>] 
+y2 &lt;-<span class="st"> </span>cattle<span class="op">$</span>pheno[,<span class="dv">1</span>,<span class="dv">1</span>] <span class="co"># use the first phenotype</span>
 <span class="kw">set.seed</span>(<span class="dv">100</span>)
 cattle2 &lt;-<span class="st"> </span><span class="kw">codeGeno</span>(cattle,<span class="dt">impute=</span><span class="ot">TRUE</span>,<span class="dt">impute.type=</span><span class="st">&quot;random&quot;</span>, <span class="dt">reference.allele =</span> <span class="st">&quot;minor&quot;</span>)
 W2 &lt;-<span class="st"> </span>cattle2<span class="op">$</span>geno

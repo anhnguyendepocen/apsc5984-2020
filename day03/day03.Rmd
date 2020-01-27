@@ -20,6 +20,8 @@ This exercise illustrates how to perform ordinary least squares (OLS) to identif
 ## Install and load R packages
 First, we are going to use the `maize` data included in the [synbreedData](https://cran.r-project.org/web/packages/synbreedData/index.html) package. Learn more about the [Synbreed project](http://www.synbreed.tum.de/) and [synbreed R packages](http://synbreed.r-forge.r-project.org/). 
 ```{r, eval=FALSE, echo=TRUE}
+rm(list=ls()) # delete the objects in the current environment 
+
 # install.packages("synbreed")
 # install.packages("synbreedData")
 library(synbreed)
@@ -31,14 +33,12 @@ summary(maize)
 
 ## Read data
 ```{r, eval=FALSE, echo=TRUE}
-rm(list=ls()) # delete the objects in the current environment 
-
 names(maize)
 y1 <- as.vector(maize$pheno) # phenotype vector 
 intercept <- rep(1, length(y1)) # intercept vector 
 W1a <- cbind(intercept, maize$geno[,1:100]) # the intercept and the SNP matrix including the first 100 SNPs
 
-length(y1) # 12150
+length(y1) # 1250
 dim(W1a) # 1250 101
 ```
 
@@ -49,6 +49,7 @@ dim(W1a) # 1250 101
 
 fit1a <- solve(t(W1a) %*% W1a) %*% t(W1a) %*% y1
 head(fit1a) # estimates of the intercept and the first five SNP effects
+tail(fit1a)
 ```
 
 ## lm() function
@@ -84,9 +85,9 @@ my.df <- 1250 - 1 - 100
 
 2*pt(q=t0, df=my.df, lower=FALSE) # intercept
 2*pt(q=t1, df=my.df, lower=FALSE) # M1
-2*pt(q=-t2, df=my.df, lower=TRUE) # M2
-2*pt(q=t3, df=my.df, lower=FALSE) # M3
-2*pt(q=t4, df=my.df, lower=TRUE) # M4
+2*pt(q=t2, df=my.df, lower=FALSE) # M2
+2*pt(q=t3, df=my.df, lower=TRUE) # M3
+2*pt(q=t4, df=my.df, lower=FALSE) # M4
 2*pt(q=t5, df=my.df, lower=TRUE) # M5
 ```
 
@@ -111,7 +112,7 @@ data(cattle)
 ?cattle
 dim(cattle$geno)
 
-y2 <- cattle$pheno[,1,1] 
+y2 <- cattle$pheno[,1,1] # use the first phenotype
 set.seed(100)
 cattle2 <- codeGeno(cattle,impute=TRUE,impute.type="random", reference.allele = "minor")
 W2 <- cattle2$geno
