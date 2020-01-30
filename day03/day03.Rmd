@@ -96,7 +96,7 @@ my.df <- 1250 - 1 - 100
 ## Fitting the whole markers as fixed
 ```{r, eval=FALSE, echo=TRUE}
 W1b <- cbind(intercept, maize$geno) # the intercept and the whole SNP matrix 
-dim(W1b) # 1250 1117
+dim(W1b) # 1250 1 + 1117
 
 # use the solve() function
 fit1b <- solve(t(W1b) %*% W1b) %*% t(W1b) %*% y1
