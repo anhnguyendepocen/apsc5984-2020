@@ -124,7 +124,7 @@ Q
 
 
 ## Compute allele frequencies for all SNPs 
-So far we have learned how to compute the allele frequency of a single SNP using the `table` function. Here, we consider how to compute allele frequencies for the entire SNPs. Of course we can apply the `table` function manually one at a time. However, this approach takes too much time to compute allele frequencies for 6,960 SNPs. Recall that allele frequency of *A* is given by 
+So far we have learned how to compute the allele frequency of a single SNP using the `table` function. Here, we consider how to compute allele frequencies for the entire SNPs. Of course we can apply the `table` function manually one at a time. However, this approach takes too much time to compute allele frequencies for 7,250 SNPs. Recall that allele frequency of *A* is given by 
 $$ 
 f(A) = p = \frac{2 \times (\text{no. of } AA \text{ individuals}) + 1 \times (\text{no. of } Aa \text{ individuals})}{2 \times \text{total no. of individuals}}.
 $$
@@ -138,7 +138,7 @@ sum(W[,1]) # sum of A allele in the first SNP
 sum(W[,2]) # sum of A allele in the second SNP
 ```
 
-How to repeat this operation for 6,960 SNPs? The `colSums` function returns the sum of each column in a matrix as a vector. 
+How to repeat this operation for 7,250 SNPs? The `colSums` function returns the sum of each column in a matrix as a vector. 
 ```{r, eval=FALSE}
 colSums(W) 
 ```
@@ -147,7 +147,7 @@ Note that `colSums(W) ` gives the numerator of the above equation. We then divid
 ```{r, eval=FALSE}
 p <- colSums(W) / (2 * nrow(W))
 ```
-The variable `p` is a vector and it contains the allele frequencies of reference allele for 6,960 SNPs. 
+The variable `p` is a vector and it contains the allele frequencies of reference allele for 7,250 SNPs. 
 
 ### Exercise 5
 What is the allele frequency of reference allele in the 400th SNP?

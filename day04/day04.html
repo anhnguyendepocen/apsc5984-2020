@@ -201,18 +201,18 @@ Q </code></pre></div>
 </div>
 <div id="compute-allele-frequencies-for-all-snps" class="section level2">
 <h2>Compute allele frequencies for all SNPs</h2>
-<p>So far we have learned how to compute the allele frequency of a single SNP using the <code>table</code> function. Here, we consider how to compute allele frequencies for the entire SNPs. Of course we can apply the <code>table</code> function manually one at a time. However, this approach takes too much time to compute allele frequencies for 6,960 SNPs. Recall that allele frequency of <em>A</em> is given by <span class="math display">\[ 
+<p>So far we have learned how to compute the allele frequency of a single SNP using the <code>table</code> function. Here, we consider how to compute allele frequencies for the entire SNPs. Of course we can apply the <code>table</code> function manually one at a time. However, this approach takes too much time to compute allele frequencies for 7,250 SNPs. Recall that allele frequency of <em>A</em> is given by <span class="math display">\[ 
 f(A) = p = \frac{2 \times (\text{no. of } AA \text{ individuals}) + 1 \times (\text{no. of } Aa \text{ individuals})}{2 \times \text{total no. of individuals}}.
 \]</span> We can rewrite this equation into <span class="math display">\[ 
 f(A) = p = \frac{(\text{no. of } A \text{ allele in the population})}{2 \times \text{total no. of individuals}}.
 \]</span> This suggests that all we need is the number of <span class="math inline">\(A\)</span> allele or reference allele <span class="math inline">\(a\)</span> for each SNP. The <code>sum</code> function returns the number of reference allele <span class="math inline">\(A\)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(W[,<span class="dv">1</span>]) <span class="co"># sum of A allele in the first SNP</span>
 <span class="kw">sum</span>(W[,<span class="dv">2</span>]) <span class="co"># sum of A allele in the second SNP</span></code></pre></div>
-<p>How to repeat this operation for 6,960 SNPs? The <code>colSums</code> function returns the sum of each column in a matrix as a vector.</p>
+<p>How to repeat this operation for 7,250 SNPs? The <code>colSums</code> function returns the sum of each column in a matrix as a vector.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colSums</span>(W) </code></pre></div>
 <p>Note that <code>colSums(W)</code> gives the numerator of the above equation. We then divide this number by <span class="math inline">\(2 \times \text{total no. of individuals}\)</span>. The function <code>nrows</code> returns the number of rows.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">colSums</span>(W) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">nrow</span>(W))</code></pre></div>
-<p>The variable <code>p</code> is a vector and it contains the allele frequencies of reference allele for 6,960 SNPs.</p>
+<p>The variable <code>p</code> is a vector and it contains the allele frequencies of reference allele for 7,250 SNPs.</p>
 <div id="exercise-5" class="section level3">
 <h3>Exercise 5</h3>
 <p>What is the allele frequency of reference allele in the 400th SNP?</p>
