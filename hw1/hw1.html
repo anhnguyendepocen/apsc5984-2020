@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Gota Morota" />
+
+
+<title>APSC 5984 Complex Trait Genomics</title>
+
+<script src="hw1_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="hw1_files/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+<script src="hw1_files/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+<script src="hw1_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="hw1_files/navigation-1.1/tabsets.js"></script>
+<script src="hw1_files/navigation-1.1/codefolding.js"></script>
+<link href="hw1_files/magnific-popup-1.1.0/magnific-popup.css" rel="stylesheet" />
+<script src="hw1_files/magnific-popup-1.1.0/jquery.magnific-popup.min.js"></script>
+<link href="hw1_files/readthedown-0.1/readthedown.css" rel="stylesheet" />
+<script src="hw1_files/readthedown-0.1/readthedown.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #ffffff; color: #1f1c1b; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #ffffff; color: #a0a0a0; border-right: 1px solid #a0a0a0; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #1f1c1b; background-color: #ffffff; }
+code > span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code > span.dt { color: #0057ae; } /* DataType */
+code > span.dv { color: #b08000; } /* DecVal */
+code > span.bn { color: #b08000; } /* BaseN */
+code > span.fl { color: #b08000; } /* Float */
+code > span.cn { color: #aa5500; } /* Constant */
+code > span.ch { color: #924c9d; } /* Char */
+code > span.sc { color: #3daee9; } /* SpecialChar */
+code > span.st { color: #bf0303; } /* String */
+code > span.vs { color: #bf0303; } /* VerbatimString */
+code > span.ss { color: #ff5500; } /* SpecialString */
+code > span.im { color: #ff5500; } /* Import */
+code > span.co { color: #898887; } /* Comment */
+code > span.do { color: #607880; } /* Documentation */
+code > span.an { color: #ca60ca; } /* Annotation */
+code > span.cv { color: #0095ff; } /* CommentVar */
+code > span.ot { color: #006e28; } /* Other */
+code > span.fu { color: #644a9b; } /* Function */
+code > span.va { color: #0057ae; } /* Variable */
+code > span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #1f1c1b; } /* Operator */
+code > span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code > span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code > span.pp { color: #006e28; } /* Preprocessor */
+code > span.at { color: #0057ae; } /* Attribute */
+code > span.re { color: #0057ae; } /* RegionMarker */
+code > span.in { color: #b08000; } /* Information */
+code > span.wa { color: #bf0303; } /* Warning */
+code > span.al { color: #bf0303; font-weight: bold; } /* Alert */
+code > span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code > span. { color: #1f1c1b; } /* Normal */
+</style>
+
+
+</head>
+
+<body>
+
+
+<div id="content" data-toggle="wy-nav-shift">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+<nav id="nav-top" role="navigation" aria-label="top navigation">
+    <a role="button" href="#" data-toggle="wy-nav-top"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+</nav>
+
+
+<div id="header">
+<h1 class="title">APSC 5984 Complex Trait Genomics</h1>
+<h1 class="subtitle">Homework assignment 1</h1>
+</div>
+
+
+<div id="table-of-contents">
+    <h2><a href="#content">APSC 5984 Complex Trait Genomics</a></h2>
+    <div id="text-table-of-contents">
+      <ul>
+      <li><a href="#arabidopsis-data">Arabidopsis data</a><ul>
+      <li><a href="#question-1">Question 1</a></li>
+      <li><a href="#question-2">Question 2</a></li>
+      <li><a href="#question-3">Question 3</a></li>
+      <li><a href="#question-4">Question 4</a></li>
+      <li><a href="#question-5">Question 5</a></li>
+      <li><a href="#question-6">Question 6</a></li>
+      <li><a href="#question-7">Question 7</a></li>
+      <li><a href="#question-8">Question 8</a></li>
+      </ul></li>
+      </ul>
+    </div>
+</div>
+
+<div id="main">
+<div id="due-date" class="section level3">
+<h3>Due date</h3>
+<p>Friday, February 14 <span class="citation">@5pm</span></p>
+</div>
+<div id="arabidopsis-data" class="section level1">
+<h1>Arabidopsis data</h1>
+<p>We will analyze Arabidopsis recombinant inbred lines available at the <a href="http://publiclines.versailles.inra.fr/page/33">Bay-0 x Shahdara</a> project. Download the <a href="http://publiclines.versailles.inra.fr/ijpbinfo/publiclines/33/BayxSha_PublishedPheno.xls">phenotypic</a> and <a href="http://publiclines.versailles.inra.fr/ijpbinfo/publiclines/33/BayxSha_2_Genotypes.xls">genotypic</a> data. The target trait in this homework assignment is <span style="color:red"> Flowering time in Long Days</span> measured as the number of days between germination and bolting (the beginning of the inflorescence growth). You can learn more about the Bay-0 x Shahdara population in <a href="http://dx.doi.org/10.1007/s00122-001-0825-9">Loudet et al., (2002)</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(readxl)
+<span class="co"># phenotypes </span>
+bayxshaY &lt;-<span class="st"> </span>(<span class="kw">read_excel</span>(<span class="st">&quot;BayxSha_PublishedPheno.xls&quot;</span>, <span class="dt">col_names=</span><span class="ot">FALSE</span>, <span class="dt">sheet=</span><span class="dv">1</span>, <span class="dt">skip=</span><span class="dv">4</span>))
+y0 &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">unlist</span>(bayxshaY[,<span class="dv">6</span>]))
+y1 &lt;-<span class="st"> </span>y0[<span class="op">-</span><span class="kw">which</span>(<span class="kw">is.na</span>(y0))]
+y1 &lt;-<span class="st"> </span><span class="kw">scale</span>(y1)
+  
+<span class="co"># genotypes </span>
+bayxshaG &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&quot;BayxSha_2_Genotypes.xls&quot;</span>, <span class="dt">col_names=</span><span class="ot">FALSE</span>, <span class="dt">skip=</span><span class="dv">5</span>)
+bayxshaG.id &lt;-<span class="st"> </span>bayxshaG[,<span class="dv">1</span>]
+bayxshaG &lt;-<span class="st"> </span>bayxshaG[,<span class="op">-</span><span class="dv">1</span>]
+bayxshaG[bayxshaG <span class="op">==</span><span class="st"> &quot;A&quot;</span>] &lt;-<span class="st"> </span><span class="dv">2</span>
+bayxshaG[bayxshaG <span class="op">==</span><span class="st"> &quot;C&quot;</span>] &lt;-<span class="st"> </span><span class="dv">1</span>
+bayxshaG[bayxshaG <span class="op">==</span><span class="st"> &quot;B&quot;</span>] &lt;-<span class="st"> </span><span class="dv">0</span>
+bayxshaG[bayxshaG <span class="op">==</span><span class="st"> &quot;D&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span>
+bayxshaG &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(bayxshaG)
+<span class="kw">mode</span>(bayxshaG) &lt;-<span class="st"> &quot;numeric&quot;</span>
+bayxshaG &lt;-<span class="st"> </span>bayxshaG[<span class="op">-</span><span class="kw">which</span>(<span class="kw">is.na</span>(y0)), ]</code></pre></div>
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>What are the dimensions of <code>y1</code> and <code>bayxshaG</code>?</p>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>How many markers contain missing genotype codings (<code>NA</code>) ? Use the function <code>is.na()</code>.</p>
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>Replace missing marker genotypes with mean values in a column-wise fashion (i.e., compute the mean of each column and replace NAs in that column). Then store marker genotypes in a matrix variable <code>W1</code>. Show that the variable <code>W1</code> does not include any <code>NA</code>.</p>
+</div>
+<div id="question-4" class="section level2">
+<h2>Question 4</h2>
+<p>Compute the allele frequencies of markers in the <code>W1</code> matrix. Then store the estimated allele frequencies in a vector <code>p</code>. What are the max, min, and mean of <code>p</code>?</p>
+</div>
+<div id="question-5" class="section level2">
+<h2>Question 5</h2>
+<p>Compute the minor allele frequencies of markers. Then store the estimated minor allele frequencies in a vector <code>maf</code>. What are the max, min, and mean of <code>maf</code>?</p>
+</div>
+<div id="question-6" class="section level2">
+<h2>Question 6</h2>
+<p>Create a new marker matrix <code>W2</code> that includes the intercept. Fit a standard OLS by using the matrix multiplication operation (<code>%*%</code>). Report the first six and the last six marker effects.</p>
+</div>
+<div id="question-7" class="section level2">
+<h2>Question 7</h2>
+<p>Fit ordinary least squares by using the <code>lm()</code> function and <code>W2</code>. Report the first six and the last six marker effects. Verify that your results agree with the ones from Question 6. Also, explain how we can obtain <code>Std. Error</code>, <code>t value</code>, and <code>Pr(&gt;|t|)</code> of marker effects.</p>
+</div>
+<div id="question-8" class="section level2">
+<h2>Question 8</h2>
+<p>Discuss the advantages and limitations of ordinary least squares.</p>
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div id="postamble" data-toggle="wy-nav-shift" class="status">
+<p class="author"><span class="glyphicon glyphicon-user"></span> Gota Morota</p>
+<p class="date"><span class="glyphicon glyphicon-calendar"></span> February 3, 2020</p>
+</div>
+
+
+<script>
+$(document).ready(function () {
+ 	  });
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
