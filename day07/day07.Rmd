@@ -1,0 +1,53 @@
+---
+title: "Linkage disequilibrium"
+author: "Gota Morota<br>[<font color=‘white’>http://morotalab.org/</font>](http://morotalab.org/)"
+date: "2/5/2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Background
+This exercise illustrates how to calculate linkage disequilibrium (LD) among genetic markers.
+
+
+## Install and load R packages
+We will analyze the `mice` data included in the [BGLR](https://cran.r-project.org/web/packages/BGLR/index.html) package. The [genetics](https://cran.r-project.org/web/packages/genetics/) package includes the `LD()`  function to calculate $D$. 
+```{r, eval=FALSE, echo=TRUE}
+rm(list=ls()) # delete the objects in the current environment 
+
+install.packages("BGLR")
+install.packages("genetics")
+
+library(BGLR)
+library(genetics)
+
+data(mice)
+?mice
+W <- mice.X[, 1:10] # use the first 10 markers
+```
+
+## D
+The `makeGenotypes()` function converts columns in a dataframe to genotypes or haplotypes. The `LD` function computes LD statistics. 
+```{r, eval=FALSE, echo=TRUE}
+?makeGenotypes
+W2 <- makeGenotypes(W, convert=c(colnames(W)), method=as.genotype.allele.count)
+
+?LD
+myLD <- LD(W2)
+names(myLD)
+myLD$D
+```
+
+## $r^2$
+$r^2$ of Hill and Robertson ([1968](https://link.springer.com/article/10.1007/BF01245622)).
+```{r, eval=FALSE, echo=TRUE}
+myLD$r
+myLD$r^2
+```
