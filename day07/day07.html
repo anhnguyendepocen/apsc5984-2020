@@ -109,6 +109,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#install-and-load-r-packages">Install and load R packages</a></li>
 <li><a href="#d">D</a></li>
 <li><a href="#r2"><span class="math inline">\(r^2\)</span></a></li>
+<li><a href="#alternative-coding">Alternative coding</a></li>
 </ul>
 </div>
 
@@ -150,6 +151,21 @@ myLD<span class="op">$</span>D</code></pre></div>
 <p><span class="math inline">\(r^2\)</span> of Hill and Robertson (<a href="https://link.springer.com/article/10.1007/BF01245622">1968</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myLD<span class="op">$</span>r
 myLD<span class="op">$</span>r<span class="op">^</span><span class="dv">2</span></code></pre></div>
+</div>
+<div id="alternative-coding" class="section level2">
+<h2>Alternative coding</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W3 &lt;-<span class="st"> </span>W <span class="co"># create a copy of W</span>
+
+<span class="co"># Convert to characters</span>
+W3[W3<span class="op">==</span><span class="dv">0</span>] &lt;-<span class="st"> &quot;A/A&quot;</span>
+W3[W3<span class="op">==</span><span class="dv">1</span>] &lt;-<span class="st"> &quot;A/T&quot;</span>
+W3[W3<span class="op">==</span><span class="dv">2</span>] &lt;-<span class="st"> &quot;T/T&quot;</span>
+W3
+
+
+?makeGenotypes
+W4 &lt;-<span class="st"> </span><span class="kw">makeGenotypes</span>(W3)
+<span class="kw">LD</span>(W4)<span class="op">$</span>r<span class="op">^</span><span class="dv">2</span></code></pre></div>
 </div>
     </section>
   </div>
