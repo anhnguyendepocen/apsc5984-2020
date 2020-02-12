@@ -22,7 +22,7 @@ This exercise illustrates how to impute markers.
 rm(list=ls()) # delete the objects in the current environment 
 
 set.seed(777)
-W <- matrix(sample(c(0, 1, 2, NA), 100, replace = TRUE, prob=c(0.4, 0.3, 0.3, 0.1)), nrow= 10, ncol=10) # 10 x 10 marker matrix
+W <- matrix(sample(c(0, 1, 2, NA), 100, replace = TRUE, prob=c(0.4, 0.3, 0.2, 0.1)), nrow= 10, ncol=10) # 10 x 10 marker matrix
 W
 ```
 
