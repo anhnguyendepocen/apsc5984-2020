@@ -1,0 +1,64 @@
+---
+title: "Marker imputation"
+author: "Gota Morota<br>[<font color=‘white’>http://morotalab.org/</font>](http://morotalab.org/)"
+date: "2/12/2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Background
+This exercise illustrates how to impute markers.
+
+
+## Simulating data
+```{r, eval=FALSE, echo=TRUE}
+rm(list=ls()) # delete the objects in the current environment 
+
+set.seed(777)
+W <- matrix(sample(c(0, 1, 2, NA), 100, replace = TRUE, prob=c(0.4, 0.3, 0.3, 0.1)), nrow= 10, ncol=10) # 10 x 10 marker matrix
+W
+```
+
+
+## Imputation based on the mean of marker codes
+```{r, eval=FALSE, echo=TRUE}
+colMeans(W, na.rm = TRUE)
+```
+
+
+## Imputation based on the binomial distribution
+```{r, eval=FALSE, echo=TRUE}
+p <- colSums(W, na.rm = TRUE) / (2 * ncol(W))
+p
+
+# Marker 1
+set.seed(777)
+rbinom(2, 1, prob = p[1])
+set.seed(777)
+sum(rbinom(2, 1, prob = p[1]))
+
+# Marker 2
+set.seed(777)
+rbinom(2, 1, prob = p[2])
+set.seed(777)
+sum(rbinom(2, 1, prob = p[2]))
+
+# Marker 10
+set.seed(777)
+rbinom(2, 1, prob = p[10])
+set.seed(777)
+sum(rbinom(2, 1, prob = p[10]))
+
+
+
+```
+
+
+
