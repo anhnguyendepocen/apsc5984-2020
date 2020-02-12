@@ -1,5 +1,5 @@
 ---
-title: "Marker imputation"
+title: "Marker genotype imputation"
 author: "Gota Morota<br>[<font color=‘white’>http://morotalab.org/</font>](http://morotalab.org/)"
 date: "2/12/2020"
 output: 
