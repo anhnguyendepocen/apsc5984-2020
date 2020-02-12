@@ -133,7 +133,7 @@ W</code></pre></div>
 </div>
 <div id="imputation-based-on-the-binomial-distribution" class="section level2">
 <h2>Imputation based on the binomial distribution</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">colSums</span>(W, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">ncol</span>(W))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">colSums</span>(W, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">nrow</span>(W))
 p
 
 <span class="co"># Marker 1</span>

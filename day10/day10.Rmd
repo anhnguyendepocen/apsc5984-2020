@@ -35,7 +35,7 @@ colMeans(W, na.rm = TRUE)
 
 ## Imputation based on the binomial distribution
 ```{r, eval=FALSE, echo=TRUE}
-p <- colSums(W, na.rm = TRUE) / (2 * ncol(W))
+p <- colSums(W, na.rm = TRUE) / (2 * nrow(W))
 p
 
 # Marker 1
