@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Gota Morota" />
+
+<meta name="date" content="2020-02-17" />
+
+<title>APSC 5984 Complex Trait Genomics</title>
+
+<script src="hw2_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="hw2_files/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+<script src="hw2_files/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+<script src="hw2_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="hw2_files/navigation-1.1/tabsets.js"></script>
+<script src="hw2_files/navigation-1.1/codefolding.js"></script>
+<link href="hw2_files/magnific-popup-1.1.0/magnific-popup.css" rel="stylesheet" />
+<script src="hw2_files/magnific-popup-1.1.0/jquery.magnific-popup.min.js"></script>
+<link href="hw2_files/readthedown-0.1/readthedown.css" rel="stylesheet" />
+<script src="hw2_files/readthedown-0.1/readthedown.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #ffffff; color: #1f1c1b; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #ffffff; color: #a0a0a0; border-right: 1px solid #a0a0a0; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #1f1c1b; background-color: #ffffff; }
+code > span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code > span.dt { color: #0057ae; } /* DataType */
+code > span.dv { color: #b08000; } /* DecVal */
+code > span.bn { color: #b08000; } /* BaseN */
+code > span.fl { color: #b08000; } /* Float */
+code > span.cn { color: #aa5500; } /* Constant */
+code > span.ch { color: #924c9d; } /* Char */
+code > span.sc { color: #3daee9; } /* SpecialChar */
+code > span.st { color: #bf0303; } /* String */
+code > span.vs { color: #bf0303; } /* VerbatimString */
+code > span.ss { color: #ff5500; } /* SpecialString */
+code > span.im { color: #ff5500; } /* Import */
+code > span.co { color: #898887; } /* Comment */
+code > span.do { color: #607880; } /* Documentation */
+code > span.an { color: #ca60ca; } /* Annotation */
+code > span.cv { color: #0095ff; } /* CommentVar */
+code > span.ot { color: #006e28; } /* Other */
+code > span.fu { color: #644a9b; } /* Function */
+code > span.va { color: #0057ae; } /* Variable */
+code > span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #1f1c1b; } /* Operator */
+code > span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code > span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code > span.pp { color: #006e28; } /* Preprocessor */
+code > span.at { color: #0057ae; } /* Attribute */
+code > span.re { color: #0057ae; } /* RegionMarker */
+code > span.in { color: #b08000; } /* Information */
+code > span.wa { color: #bf0303; } /* Warning */
+code > span.al { color: #bf0303; font-weight: bold; } /* Alert */
+code > span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code > span. { color: #1f1c1b; } /* Normal */
+</style>
+
+
+</head>
+
+<body>
+
+
+<div id="content" data-toggle="wy-nav-shift">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+<nav id="nav-top" role="navigation" aria-label="top navigation">
+    <a role="button" href="#" data-toggle="wy-nav-top"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+</nav>
+
+
+<div id="header">
+<h1 class="title">APSC 5984 Complex Trait Genomics</h1>
+<h1 class="subtitle">Homework assignment 2</h1>
+</div>
+
+
+<div id="table-of-contents">
+    <h2><a href="#content">APSC 5984 Complex Trait Genomics</a></h2>
+    <div id="text-table-of-contents">
+      <ul>
+      <li><a href="#due-date">Due date</a></li>
+      <li><a href="#data">Data</a></li>
+      <li><a href="#question-1">Question 1</a></li>
+      <li><a href="#question-2">Question 2</a></li>
+      <li><a href="#question-3">Question 3</a></li>
+      <li><a href="#question-4">Question 4</a></li>
+      <li><a href="#question-5">Question 5</a></li>
+      <li><a href="#question-6">Question 6</a></li>
+      <li><a href="#question-7">Question 7</a></li>
+      <li><a href="#question-8">Question 8</a></li>
+      <li><a href="#question-9">Question 9</a></li>
+      <li><a href="#question-10">Question 10</a></li>
+      <li><a href="#question-11">Question 11</a></li>
+      <li><a href="#question-12">Question 12</a></li>
+      <li><a href="#question-13">Question 13</a></li>
+      <li><a href="#question-14">Question 14</a></li>
+      </ul>
+    </div>
+</div>
+
+<div id="main">
+<div id="due-date" class="section level2">
+<h2>Due date</h2>
+<p>Friday, February 28, 5pm</p>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>For this assignment, we are going to use the <code>cattle</code> data included in the synbreedData package. Learn more about the <a href="http://www.synbreed.tum.de/">Synbreed project</a> and <a href="http://synbreed.r-forge.r-project.org/">synbreed R packages</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(synbreed)
+<span class="kw">library</span>(synbreedData)
+<span class="kw">help</span>(<span class="dt">package =</span> <span class="st">&quot;synbreedData&quot;</span>)
+<span class="kw">data</span>(cattle)
+<span class="st">`</span><span class="dt">?</span><span class="st">`</span>(cattle)
+pheno &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(cattle<span class="op">$</span>pheno[, <span class="dv">1</span>, <span class="dv">1</span>])
+pheno &lt;-<span class="st"> </span><span class="kw">scale</span>(pheno)
+<span class="kw">dim</span>(cattle<span class="op">$</span>geno)
+<span class="kw">set.seed</span>(<span class="dv">100</span>)
+cattleG &lt;-<span class="st"> </span><span class="kw">codeGeno</span>(cattle, <span class="dt">impute =</span> <span class="ot">TRUE</span>, <span class="dt">impute.type =</span> <span class="st">&quot;random&quot;</span>, <span class="dt">reference.allele =</span> <span class="st">&quot;minor&quot;</span>)  <span class="co"># genotype imputation</span>
+W &lt;-<span class="st"> </span>cattleG<span class="op">$</span>geno  <span class="co"># marker genotype matrix </span></code></pre></div>
+</div>
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>Compute the allele frequency of SNP markers. Recall that the expectation of marker genotype, <span class="math inline">\(E(W)\)</span>, is given by <span class="math inline">\(2p\)</span>, where <span class="math inline">\(p\)</span> is the frequency of reference allele. Verify that <span class="math inline">\(2p\)</span> is equal to the mean of each marker genotype obtained from the <code>colMeans()</code> function. Use the <code>all.equal()</code> function.</p>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>Recall that the variance of marker genotype, <span class="math inline">\(Var(W)\)</span>, is given by <span class="math inline">\(2p(1-p)\)</span>. Verify that <span class="math inline">\(2p(1-p)\)</span> is close to the variance of each genotype obtained from the <code>var()</code> function.</p>
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>Create a new marker matrix <code>X</code> from <code>W</code> and recode markers so that three genotypes <span class="math inline">\(AA\)</span>, <span class="math inline">\(Aa\)</span>, and <span class="math inline">\(aa\)</span> are coded as 1, 0, and -1, respectively.</p>
+<p>Recall that the expectation of genotype, <span class="math inline">\(E(X)\)</span>, is given by <span class="math inline">\(2p-1\)</span>, where <span class="math inline">\(p\)</span> is the frequency of reference allele. Verify that <span class="math inline">\(2p-1\)</span> is equal to the mean of each genotype obtained from the <code>colMeans()</code> function.</p>
+</div>
+<div id="question-4" class="section level2">
+<h2>Question 4</h2>
+<p>Recall that the variance of genotype, <span class="math inline">\(Var(X)\)</span>, remains the same and is given by <span class="math inline">\(2p(1-p)\)</span>. Verify that <span class="math inline">\(2p(1-p)\)</span> is close to the variance of each genotype obtained from the <code>var()</code> function.</p>
+</div>
+<div id="question-5" class="section level2">
+<h2>Question 5</h2>
+<p>Verify that no matter how we code markers, centered marker codes, <span class="math inline">\(W - E(W)\)</span> and <span class="math inline">\(X - E(X)\)</span>, remain the same.</p>
+</div>
+<div id="question-6" class="section level2">
+<h2>Question 6</h2>
+<p>We will recode the SNP genotypes so that now the major allele is treated as a reference allele. Store the new coding into the <code>W2</code> variable.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Recode so that AA -&gt; 0, Aa -&gt; 1, and aa -&gt; 2. </span>
+W2 &lt;-<span class="st"> </span>W
+W2[W2<span class="op">==</span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="dv">3</span>
+W2[W2<span class="op">==</span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="dv">0</span>
+W2[W2<span class="op">==</span><span class="dv">3</span>] &lt;-<span class="st"> </span><span class="dv">2</span></code></pre></div>
+<p>Compute the allele freqeuncy of SNP markers using <code>W2</code>. Compare your result with the allele frequency obtained from <code>W</code>.</p>
+</div>
+<div id="question-7" class="section level2">
+<h2>Question 7</h2>
+<p>Create a new variable <code>W3</code> by subsetting the first 10 markers of the <code>W</code> matrix. The dimension of <code>W3</code> is equal to <span class="math inline">\(500 \times 10\)</span>. Verify that the covariance between allelic counts is <span class="math inline">\(Cov(W2[,i], W2[,j]) \approx 2D\)</span>, where <span class="math inline">\(D\)</span> is the estimate of linkage disequilibrium. Use the <code>W3</code> object and the <code>LD()</code> function from the <a href="https://cran.r-project.org/web/packages/genetics/">genetics</a> package to obtain <span class="math inline">\(D\)</span>.</p>
+</div>
+<div id="question-8" class="section level2">
+<h2>Question 8</h2>
+<p>Recall that <span class="math inline">\(r^2\)</span> of Hill and Robertson (<a href="https://link.springer.com/article/10.1007/BF01245622">1968</a>) and <span class="math inline">\(r^2\)</span> (correlation squared) directly applied to SNP marker matrix (allelic counts) are theoretically equivalent. Check whether these two are the same using the <code>W3</code> object. Create a scatter plot of <span class="math inline">\(r^2\)</span> (Hill and Robertson) vs. <span class="math inline">\(r^2\)</span> (correlation squared of SNP matrix). Use the <code>LD()</code> and the <code>cor()</code> functions. How good is the agreement? If they do not agree, explain why.</p>
+</div>
+<div id="question-9" class="section level2">
+<h2>Question 9</h2>
+<p>Select SNP markers only on chromosome 1 and store them as a <code>W4</code> object.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W4 &lt;-<span class="st"> </span>cattleG<span class="op">$</span>geno[, <span class="kw">which</span>(cattleG<span class="op">$</span>map <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)]
+<span class="kw">dim</span>(W4)</code></pre></div>
+<p>Perform GWAS using single marker ordinary least squares (OLS) and estimate SNP marker effects. Use the objects <code>W4</code> and <code>pheno</code>, and the function <code>summary(lm())</code>. Save the vector of marker effects into <code>a</code>.</p>
+</div>
+<div id="question-10" class="section level2">
+<h2>Question 10</h2>
+<p>Recode the SNP genotypes (<code>W4</code>) so that now the major allele is treated as a reference allele. Store the new coding into the <code>W5</code> variable. Perform single marker GWAS using OLS and estimate SNP marker effects. Use the objects <code>W5</code> and <code>pheno</code>, and the function <code>lm()</code>. Save the vector of marker effects into <code>a2</code>. What is the difference between <code>a</code> and <code>a2</code>?</p>
+</div>
+<div id="question-11" class="section level2">
+<h2>Question 11</h2>
+<p>Compute the allele frequency of reference allele for each SNP marker (Question 1). Report the estimate of multi-locus additive genetic variance under the linkage equilibrium (LE) assumption. Use the objects <code>W4</code> and <code>a</code>.</p>
+</div>
+<div id="question-12" class="section level2">
+<h2>Question 12</h2>
+<p>Compute multi-locus additive genetic variance that accounts for linkage disequilibrium (LD). Apply the expression based on the correlation between genotypes by using the <code>cor()</code> function. Report the estimate of additive genetic variance. Use the objects <code>W4</code> and <code>a</code>.</p>
+</div>
+<div id="question-13" class="section level2">
+<h2>Question 13</h2>
+<p>What is the proportion of the genetic variance under LD that is explained by the genetic variance under LE?</p>
+</div>
+<div id="question-14" class="section level2">
+<h2>Question 14</h2>
+<p>Read <a href="http://www.synbreed.tum.de/">Sved and Hill (2018)</a> and summmarize the paper in 300 - 500 words.</p>
+</div>
+</div>
+
+
+</div>
+
+<div id="postamble" data-toggle="wy-nav-shift" class="status">
+<p class="author"><span class="glyphicon glyphicon-user"></span> Gota Morota</p>
+<p class="date"><span class="glyphicon glyphicon-calendar"></span> February 17, 2020</p>
+</div>
+
+
+<script>
+$(document).ready(function () {
+ 	  });
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
