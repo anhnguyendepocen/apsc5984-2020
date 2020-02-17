@@ -1,0 +1,107 @@
+---
+title: "Ridge regression 1"
+author: "Gota Morota"
+date: "February 17, 2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+
+## Simulated data 
+```{r}
+y <- c(10, 5, 8)
+y
+
+set.seed(40)
+n <- 3 # individuals
+m <- 5 # markers 
+W <- matrix(rbinom(n=n*m, size=2, prob=0.5), nrow=n, ncol=m)
+W
+```
+
+## Ordinary least squares 
+```{r}
+# W'W
+t(W)%*%W
+
+# Inverse of W'W
+try( solve(t(W)%*%W) )
+
+# SNP effects
+try( a <- solve(t(W)%*%W) %*% t(W)%*% y )
+
+# determinant
+det(t(W)%*%W)
+```
+
+
+## The role of $\lambda$
+```{r}
+lambda1 <- 0.1
+diag(lambda1, m)
+
+# W'W
+t(W)%*%W
+
+# W'W + lambda1
+t(W)%*%W + diag(lambda1, m)
+
+# Inverse of W'W + lambda1
+solve(t(W)%*%W + diag(lambda1, m))
+
+# SNP effects
+a1 <- solve(t(W)%*%W + diag(lambda1, m)) %*% t(W)%*% y
+a1
+
+
+# determinant
+det( t(W) %*% W + diag(lambda1, m) )
+```
+
+
+## Different choice of $\lambda$
+```{r}
+lambda2 <- 1
+diag(lambda2, m)
+
+# W'W
+t(W)%*%W
+
+# W'W + lambda2
+t(W)%*%W + diag(lambda2, m)
+
+# Inverse of W'W + lambda2
+solve(t(W)%*%W + diag(lambda2, m))
+
+# SNP effects
+a2 <- solve(t(W)%*%W + diag(lambda2, m)) %*% t(W)%*% y
+a2
+
+
+# determinant
+det( t(W) %*% W + diag(lambda2, m) )
+```
+
+
+
+
