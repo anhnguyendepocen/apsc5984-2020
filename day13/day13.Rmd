@@ -1,0 +1,81 @@
+---
+title: "Ridge regression 2"
+author: "Gota Morota"
+date: "February 19, 2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+
+## Simulated data 
+```{r}
+y <- c(10, 5, 8)
+y
+
+set.seed(40)
+n <- 3 # individuals
+m <- 2 # markers 
+W <- matrix(rbinom(n=n*m, size=2, prob=0.5), nrow=n, ncol=m)
+W
+```
+
+## Ordinary least squares 
+```{r}
+# SNP effects
+a_ols <- solve(t(W)%*%W) %*% t(W)%*% y 
+a_ols
+```
+
+
+## Ridge regression 
+```{r}
+lambda = 0.1
+
+# Directly obtain ridge solutions 
+a_ridge1 <- solve(t(W)%*%W + diag(lambda, m)) %*% t(W)%*% y
+a_ridge1
+
+# Indirectly obtain ridge solutions from OLS
+a_ridge2 <- solve(diag(m) + solve(t(W)%*%W) * lambda) %*% a_ols
+a_ridge2
+```
+
+## glmnet R package 
+```{r}
+# install.packages("glmnet")
+library(glmnet)
+
+library(BGLR) # use the wheat dataset
+data(wheat)
+?wheat
+y <- wheat.Y[,2]
+W <- wheat.X
+dim(W)
+
+a_ridge <- glmnet(W, y, alpha = 0, lambda=0.2) # use alpha = 0 for ridge
+names(a_ridge)
+a_ridge$a0
+head(a_ridge$beta) # the first six marker effects
+```
+
+
