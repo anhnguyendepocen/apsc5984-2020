@@ -108,7 +108,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <ul>
 <li><a href="#simulated-data">Simulated data</a></li>
 <li><a href="#ordinary-least-squares">Ordinary least squares</a></li>
-<li><a href="#ridge-regression">Ridge regression</a></li>
+<li><a href="#ridge-regression-with-lambda-0.1">Ridge regression with lambda = 0.1</a></li>
+<li><a href="#ridge-regression-with-lambda-10">Ridge regression with lambda = 10</a></li>
 <li><a href="#glmnet-r-package">glmnet R package</a></li>
 </ul>
 </div>
@@ -140,8 +141,8 @@ a_ols</code></pre></div>
 [1,]    4
 [2,]    4</code></pre>
 </div>
-<div id="ridge-regression" class="section level2">
-<h2>Ridge regression</h2>
+<div id="ridge-regression-with-lambda-0.1" class="section level2">
+<h2>Ridge regression with lambda = 0.1</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lambda =<span class="st"> </span><span class="fl">0.1</span>
 
 <span class="co"># Directly obtain ridge solutions</span>
@@ -157,6 +158,23 @@ a_ridge2</code></pre></div>
 [1,] 3.992995
 [2,] 3.642732</code></pre>
 </div>
+<div id="ridge-regression-with-lambda-10" class="section level2">
+<h2>Ridge regression with lambda = 10</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lambda =<span class="st"> </span><span class="dv">10</span>
+
+<span class="co"># Directly obtain ridge solutions</span>
+a_ridge3 &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(W) <span class="op">%*%</span><span class="st"> </span>W <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, m)) <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(W) <span class="op">%*%</span><span class="st"> </span>y
+a_ridge3</code></pre></div>
+<pre><code>          [,1]
+[1,] 1.7142857
+[2,] 0.5714286</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Indirectly obtain ridge solutions from OLS</span>
+a_ridge4 &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">diag</span>(m) <span class="op">+</span><span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(W) <span class="op">%*%</span><span class="st"> </span>W) <span class="op">*</span><span class="st"> </span>lambda) <span class="op">%*%</span><span class="st"> </span>a_ols
+a_ridge4</code></pre></div>
+<pre><code>          [,1]
+[1,] 1.7142857
+[2,] 0.5714286</code></pre>
+</div>
 <div id="glmnet-r-package" class="section level2">
 <h2>glmnet R package</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages('glmnet')</span>
@@ -169,15 +187,16 @@ y &lt;-<span class="st"> </span>wheat.Y[, <span class="dv">2</span>]
 W &lt;-<span class="st"> </span>wheat.X
 <span class="kw">dim</span>(W)</code></pre></div>
 <pre><code>[1]  599 1279</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_ridge &lt;-<span class="st"> </span><span class="kw">glmnet</span>(W, y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> <span class="fl">0.2</span>)  <span class="co"># use alpha = 0 for ridge</span>
-<span class="kw">names</span>(a_ridge)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lambda = 0.2</span>
+a_ridge5 &lt;-<span class="st"> </span><span class="kw">glmnet</span>(W, y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> <span class="fl">0.2</span>)  <span class="co"># use alpha = 0 for ridge</span>
+<span class="kw">names</span>(a_ridge5)</code></pre></div>
 <pre><code> [1] &quot;a0&quot;        &quot;beta&quot;      &quot;df&quot;        &quot;dim&quot;       &quot;lambda&quot;   
  [6] &quot;dev.ratio&quot; &quot;nulldev&quot;   &quot;npasses&quot;   &quot;jerr&quot;      &quot;offset&quot;   
 [11] &quot;call&quot;      &quot;nobs&quot;     </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_ridge<span class="op">$</span>a0</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_ridge5<span class="op">$</span>a0</code></pre></div>
 <pre><code>       s0 
 -1.014927 </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(a_ridge<span class="op">$</span>beta)  <span class="co"># the first six marker effects</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(a_ridge5<span class="op">$</span>beta)  <span class="co"># the first six marker effects</span></code></pre></div>
 <pre><code>6 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
                   s0
 wPt.0538 -0.01779275
@@ -186,6 +205,34 @@ wPt.6348 -0.02959608
 wPt.9992  0.01144462
 wPt.2838 -0.03363664
 wPt.8266 -0.04012267</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lambda = 10</span>
+a_ridge6 &lt;-<span class="st"> </span><span class="kw">glmnet</span>(W, y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> <span class="dv">10</span>)  <span class="co"># use alpha = 0 for ridge</span>
+a_ridge6<span class="op">$</span>a0</code></pre></div>
+<pre><code>        s0 
+-0.4921524 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(a_ridge6<span class="op">$</span>beta)  <span class="co"># the first six marker effects</span></code></pre></div>
+<pre><code>6 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+                    s0
+wPt.0538  0.0010426896
+wPt.8463  0.0094178218
+wPt.6348  0.0025946282
+wPt.9992  0.0004541006
+wPt.2838  0.0015773713
+wPt.8266 -0.0037416161</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lambda = 1000</span>
+a_ridge7 &lt;-<span class="st"> </span><span class="kw">glmnet</span>(W, y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> <span class="dv">1000</span>)  <span class="co"># use alpha = 0 for ridge</span>
+a_ridge7<span class="op">$</span>a0</code></pre></div>
+<pre><code>         s0 
+-0.03698497 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(a_ridge7<span class="op">$</span>beta)  <span class="co"># the first six marker effects</span></code></pre></div>
+<pre><code>6 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+                   s0
+wPt.0538 2.180747e-04
+wPt.8463 3.633714e-04
+wPt.6348 1.920957e-04
+wPt.9992 2.709440e-04
+wPt.2838 2.832555e-04
+wPt.8266 1.151529e-05</code></pre>
 </div>
     </section>
   </div>

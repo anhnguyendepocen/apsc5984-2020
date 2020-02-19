@@ -47,7 +47,7 @@ a_ols
 ```
 
 
-## Ridge regression 
+## Ridge regression with lambda = 0.1
 ```{r}
 lambda = 0.1
 
@@ -59,6 +59,21 @@ a_ridge1
 a_ridge2 <- solve(diag(m) + solve(t(W)%*%W) * lambda) %*% a_ols
 a_ridge2
 ```
+
+
+## Ridge regression with lambda = 10
+```{r}
+lambda = 10
+
+# Directly obtain ridge solutions 
+a_ridge3 <- solve(t(W)%*%W + diag(lambda, m)) %*% t(W)%*% y
+a_ridge3
+
+# Indirectly obtain ridge solutions from OLS
+a_ridge4 <- solve(diag(m) + solve(t(W)%*%W) * lambda) %*% a_ols
+a_ridge4
+```
+
 
 ## glmnet R package 
 ```{r}
@@ -72,10 +87,23 @@ y <- wheat.Y[,2]
 W <- wheat.X
 dim(W)
 
-a_ridge <- glmnet(W, y, alpha = 0, lambda=0.2) # use alpha = 0 for ridge
-names(a_ridge)
-a_ridge$a0
-head(a_ridge$beta) # the first six marker effects
+# lambda = 0.2
+a_ridge5 <- glmnet(W, y, alpha = 0, lambda=0.2) # use alpha = 0 for ridge
+names(a_ridge5)
+a_ridge5$a0
+head(a_ridge5$beta) # the first six marker effects
+
+# lambda = 10
+a_ridge6 <- glmnet(W, y, alpha = 0, lambda=10) # use alpha = 0 for ridge
+a_ridge6$a0
+head(a_ridge6$beta) # the first six marker effects
+
+# lambda = 1000
+a_ridge7 <- glmnet(W, y, alpha = 0, lambda=1000) # use alpha = 0 for ridge
+a_ridge7$a0
+head(a_ridge7$beta) # the first six marker effects
+
+
 ```
 
 
