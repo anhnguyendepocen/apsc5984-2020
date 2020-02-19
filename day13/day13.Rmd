@@ -83,7 +83,7 @@ library(glmnet)
 library(BGLR) # use the wheat dataset
 data(wheat)
 ?wheat
-y <- wheat.Y[,2]
+y <- wheat.Y[,2] # use the first phenotype
 W <- wheat.X
 dim(W)
 
@@ -94,16 +94,14 @@ a_ridge5$a0
 head(a_ridge5$beta) # the first six marker effects
 
 # lambda = 10
-a_ridge6 <- glmnet(W, y, alpha = 0, lambda=10) # use alpha = 0 for ridge
+a_ridge6 <- glmnet(W, y, alpha = 0, lambda=10) 
 a_ridge6$a0
 head(a_ridge6$beta) # the first six marker effects
 
 # lambda = 1000
-a_ridge7 <- glmnet(W, y, alpha = 0, lambda=1000) # use alpha = 0 for ridge
+a_ridge7 <- glmnet(W, y, alpha = 0, lambda=1000) 
 a_ridge7$a0
 head(a_ridge7$beta) # the first six marker effects
-
-
 ```
 
 

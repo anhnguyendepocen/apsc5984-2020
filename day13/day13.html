@@ -183,7 +183,7 @@ a_ridge4</code></pre></div>
 <span class="kw">library</span>(BGLR)  <span class="co"># use the wheat dataset</span>
 <span class="kw">data</span>(wheat)
 <span class="st">`</span><span class="dt">?</span><span class="st">`</span>(wheat)
-y &lt;-<span class="st"> </span>wheat.Y[, <span class="dv">2</span>]
+y &lt;-<span class="st"> </span>wheat.Y[, <span class="dv">2</span>]  <span class="co"># use the first phenotype</span>
 W &lt;-<span class="st"> </span>wheat.X
 <span class="kw">dim</span>(W)</code></pre></div>
 <pre><code>[1]  599 1279</code></pre>
@@ -206,7 +206,7 @@ wPt.9992  0.01144462
 wPt.2838 -0.03363664
 wPt.8266 -0.04012267</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lambda = 10</span>
-a_ridge6 &lt;-<span class="st"> </span><span class="kw">glmnet</span>(W, y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> <span class="dv">10</span>)  <span class="co"># use alpha = 0 for ridge</span>
+a_ridge6 &lt;-<span class="st"> </span><span class="kw">glmnet</span>(W, y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> <span class="dv">10</span>)
 a_ridge6<span class="op">$</span>a0</code></pre></div>
 <pre><code>        s0 
 -0.4921524 </code></pre>
@@ -220,7 +220,7 @@ wPt.9992  0.0004541006
 wPt.2838  0.0015773713
 wPt.8266 -0.0037416161</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lambda = 1000</span>
-a_ridge7 &lt;-<span class="st"> </span><span class="kw">glmnet</span>(W, y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> <span class="dv">1000</span>)  <span class="co"># use alpha = 0 for ridge</span>
+a_ridge7 &lt;-<span class="st"> </span><span class="kw">glmnet</span>(W, y, <span class="dt">alpha =</span> <span class="dv">0</span>, <span class="dt">lambda =</span> <span class="dv">1000</span>)
 a_ridge7<span class="op">$</span>a0</code></pre></div>
 <pre><code>         s0 
 -0.03698497 </code></pre>
