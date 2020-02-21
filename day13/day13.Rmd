@@ -83,7 +83,7 @@ library(glmnet)
 library(BGLR) # use the wheat dataset
 data(wheat)
 ?wheat
-y <- wheat.Y[,2] # use the first phenotype
+y <- wheat.Y[,2] # use the second phenotype
 W <- wheat.X
 dim(W)
 

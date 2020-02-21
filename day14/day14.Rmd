@@ -1,0 +1,82 @@
+---
+title: "Ridge regression 3"
+author: "Gota Morota"
+date: "February 21, 2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+
+## Data simulation
+```{r}
+set.seed(40)
+n <- 3 # individuals
+m <- 5 # markers 
+W <- matrix(rbinom(n=n*m, size=2, prob=0.5), nrow=n, ncol=m)
+W
+
+y <- c(10, 5, 8)
+y
+```
+
+
+## Ridge regression
+```{r}
+lambda <- 0.1
+diag(lambda, m)
+
+# SNP effects
+a <- solve(t(W)%*%W + diag(lambda, m)) %*% t(W)%*% y
+a
+```
+
+
+## Scalar form 
+```{r}
+# marker 1
+a[1,]
+# marker 2
+a[2,]
+
+# marker 1
+(W[,1]  %*% (y - W[,2:5] %*% matrix(a[-1,]))) / (sum(W[,1]^2) + diag(lambda,1))
+# marker 2
+(W[,2]  %*% (y - W[,-2] %*% matrix(a[-2,]))) / (sum(W[,2]^2) + diag(lambda,1))
+```
+
+
+
+## Marker specific shrinkage  
+```{r}
+# marker 1
+sum(W[,1]^2) / (sum(W[,1]^2) + diag(lambda,1))
+
+# marker 2
+sum(W[,2]^2) / (sum(W[,2]^2) + diag(lambda,1)) 
+
+# marker 3
+sum(W[,3]^2) / (sum(W[,3]^2) + diag(lambda,1)) 
+```
+
+
+
