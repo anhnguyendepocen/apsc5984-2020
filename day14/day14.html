@@ -110,6 +110,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#ridge-regression">Ridge regression</a></li>
 <li><a href="#scalar-form">Scalar form</a></li>
 <li><a href="#marker-specific-shrinkage">Marker specific shrinkage</a></li>
+<li><a href="#allele-frequency">Allele frequency</a></li>
 </ul>
 </div>
 
@@ -118,72 +119,71 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     <section id="main-content">
 <div id="data-simulation" class="section level2">
 <h2>Data simulation</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">40</span>)
-n &lt;-<span class="st"> </span><span class="dv">3</span>  <span class="co"># individuals</span>
-m &lt;-<span class="st"> </span><span class="dv">5</span>  <span class="co"># markers </span>
-W &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rbinom</span>(<span class="dt">n =</span> n <span class="op">*</span><span class="st"> </span>m, <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">prob =</span> <span class="fl">0.5</span>), <span class="dt">nrow =</span> n, <span class="dt">ncol =</span> m)
-W</code></pre></div>
-<pre><code>     [,1] [,2] [,3] [,4] [,5]
-[1,]    1    0    0    0    0
-[2,]    2    0    1    0    0
-[3,]    1    1    1    1    2</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">8</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">101</span>)
+n &lt;-<span class="st"> </span><span class="dv">10</span>  <span class="co"># individuals</span>
+m &lt;-<span class="st"> </span><span class="dv">30</span>  <span class="co"># markers </span>
+W0 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rbinom</span>(<span class="dt">n =</span> n <span class="op">*</span><span class="st"> </span>m, <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">prob =</span> <span class="fl">0.3</span>), <span class="dt">nrow =</span> n, <span class="dt">ncol =</span> m)
+W &lt;-<span class="st"> </span><span class="kw">scale</span>(W0, <span class="dt">center =</span> <span class="ot">TRUE</span>, <span class="dt">scale =</span> <span class="ot">FALSE</span>)
+
+y &lt;-<span class="st"> </span><span class="kw">rchisq</span>(n, <span class="dv">5</span>)
 y</code></pre></div>
-<pre><code>[1] 10  5  8</code></pre>
+<pre><code> [1] 2.441160 2.038945 6.339306 2.942351 7.455671 1.996304 3.271530
+ [8] 5.398677 3.050813 5.325263</code></pre>
 </div>
 <div id="ridge-regression" class="section level2">
 <h2>Ridge regression</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lambda &lt;-<span class="st"> </span><span class="fl">0.1</span>
-<span class="kw">diag</span>(lambda, m)</code></pre></div>
-<pre><code>     [,1] [,2] [,3] [,4] [,5]
-[1,]  0.1  0.0  0.0  0.0  0.0
-[2,]  0.0  0.1  0.0  0.0  0.0
-[3,]  0.0  0.0  0.1  0.0  0.0
-[4,]  0.0  0.0  0.0  0.1  0.0
-[5,]  0.0  0.0  0.0  0.0  0.1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># SNP effects</span>
-a &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(W) <span class="op">%*%</span><span class="st"> </span>W <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, m)) <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(W) <span class="op">%*%</span><span class="st"> </span>y
-a</code></pre></div>
-<pre><code>          [,1]
-[1,]  7.367792
-[2,]  1.531720
-[3,] -8.711284
-[4,]  1.531720
-[5,]  3.063440</code></pre>
+
+<span class="co"># SNP effects</span>
+a &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(W) <span class="op">%*%</span><span class="st"> </span>W <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, m)) <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(W) <span class="op">%*%</span><span class="st"> </span>y</code></pre></div>
 </div>
 <div id="scalar-form" class="section level2">
 <h2>Scalar form</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># marker 1</span>
 a[<span class="dv">1</span>, ]</code></pre></div>
-<pre><code>[1] 7.367792</code></pre>
+<pre><code>[1] -0.3222766</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># marker 2</span>
 a[<span class="dv">2</span>, ]</code></pre></div>
-<pre><code>[1] 1.53172</code></pre>
+<pre><code>[1] 0.4282193</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># marker 1</span>
-(W[, <span class="dv">1</span>] <span class="op">%*%</span><span class="st"> </span>(y <span class="op">-</span><span class="st"> </span>W[, <span class="dv">2</span><span class="op">:</span><span class="dv">5</span>] <span class="op">%*%</span><span class="st"> </span><span class="kw">matrix</span>(a[<span class="op">-</span><span class="dv">1</span>, ])))<span class="op">/</span>(<span class="kw">sum</span>(W[, <span class="dv">1</span>]<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, 
+(W[, <span class="dv">1</span>] <span class="op">%*%</span><span class="st"> </span>(y <span class="op">-</span><span class="st"> </span>W[, <span class="op">-</span><span class="dv">1</span>] <span class="op">%*%</span><span class="st"> </span><span class="kw">matrix</span>(a[<span class="op">-</span><span class="dv">1</span>, ])))<span class="op">/</span>(<span class="kw">sum</span>(W[, <span class="dv">1</span>]<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, 
     <span class="dv">1</span>))</code></pre></div>
-<pre><code>         [,1]
-[1,] 7.367792</code></pre>
+<pre><code>           [,1]
+[1,] -0.3222766</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># marker 2</span>
 (W[, <span class="dv">2</span>] <span class="op">%*%</span><span class="st"> </span>(y <span class="op">-</span><span class="st"> </span>W[, <span class="op">-</span><span class="dv">2</span>] <span class="op">%*%</span><span class="st"> </span><span class="kw">matrix</span>(a[<span class="op">-</span><span class="dv">2</span>, ])))<span class="op">/</span>(<span class="kw">sum</span>(W[, <span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, 
     <span class="dv">1</span>))</code></pre></div>
-<pre><code>        [,1]
-[1,] 1.53172</code></pre>
+<pre><code>          [,1]
+[1,] 0.4282193</code></pre>
 </div>
 <div id="marker-specific-shrinkage" class="section level2">
 <h2>Marker specific shrinkage</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># marker 1</span>
 <span class="kw">sum</span>(W[, <span class="dv">1</span>]<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(<span class="kw">sum</span>(W[, <span class="dv">1</span>]<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, <span class="dv">1</span>))</code></pre></div>
 <pre><code>          [,1]
-[1,] 0.9836066</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># marker 2</span>
+[1,] 0.9545455</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># sum(W[,1]^2)</span>
+
+<span class="co"># marker 2</span>
 <span class="kw">sum</span>(W[, <span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(<span class="kw">sum</span>(W[, <span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, <span class="dv">1</span>))</code></pre></div>
 <pre><code>          [,1]
-[1,] 0.9090909</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># marker 3</span>
+[1,] 0.9615385</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># sum(W[,2]^2)</span>
+
+<span class="co"># marker 3</span>
 <span class="kw">sum</span>(W[, <span class="dv">3</span>]<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(<span class="kw">sum</span>(W[, <span class="dv">3</span>]<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">diag</span>(lambda, <span class="dv">1</span>))</code></pre></div>
-<pre><code>         [,1]
-[1,] 0.952381</code></pre>
+<pre><code>          [,1]
+[1,] 0.9545455</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># sum(W[,3]^2)</span></code></pre></div>
+</div>
+<div id="allele-frequency" class="section level2">
+<h2>Allele frequency</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">colSums</span>(W0)<span class="op">/</span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">nrow</span>(W0))
+p[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</code></pre></div>
+<pre><code>[1] 0.15 0.25 0.35</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">maf &lt;-<span class="st"> </span><span class="kw">ifelse</span>(p <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.5</span>, <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p, p)
+maf[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</code></pre></div>
+<pre><code>[1] 0.15 0.25 0.35</code></pre>
 </div>
     </section>
   </div>

@@ -29,13 +29,13 @@ opts_knit$set(width=75)
 
 ## Data simulation
 ```{r}
-set.seed(40)
-n <- 3 # individuals
-m <- 5 # markers 
-W <- matrix(rbinom(n=n*m, size=2, prob=0.5), nrow=n, ncol=m)
-W
+set.seed(101)
+n <- 10 # individuals
+m <- 30 # markers 
+W0 <- matrix(rbinom(n=n*m, size=2, prob=0.3), nrow=n, ncol=m)
+W <- scale(W0, center = TRUE, scale = FALSE)
 
-y <- c(10, 5, 8)
+y <- rchisq(n, 5)
 y
 ```
 
@@ -43,23 +43,21 @@ y
 ## Ridge regression
 ```{r}
 lambda <- 0.1
-diag(lambda, m)
 
 # SNP effects
 a <- solve(t(W)%*%W + diag(lambda, m)) %*% t(W)%*% y
-a
 ```
 
 
 ## Scalar form 
-```{r}
+```{r, echo=TRUE}
 # marker 1
 a[1,]
 # marker 2
 a[2,]
 
 # marker 1
-(W[,1]  %*% (y - W[,2:5] %*% matrix(a[-1,]))) / (sum(W[,1]^2) + diag(lambda,1))
+(W[,1]  %*% (y - W[,-1] %*% matrix(a[-1,]))) / (sum(W[,1]^2) + diag(lambda,1))
 # marker 2
 (W[,2]  %*% (y - W[,-2] %*% matrix(a[-2,]))) / (sum(W[,2]^2) + diag(lambda,1))
 ```
@@ -70,13 +68,23 @@ a[2,]
 ```{r}
 # marker 1
 sum(W[,1]^2) / (sum(W[,1]^2) + diag(lambda,1))
+# sum(W[,1]^2) 
 
 # marker 2
 sum(W[,2]^2) / (sum(W[,2]^2) + diag(lambda,1)) 
+#sum(W[,2]^2)
 
 # marker 3
 sum(W[,3]^2) / (sum(W[,3]^2) + diag(lambda,1)) 
+#sum(W[,3]^2)
 ```
 
+## Allele frequency   
+```{r}
+p <- colSums(W0) / (2*nrow(W0))
+p[1:3]
 
+maf <- ifelse( p > 0.5, 1-p, p)
+maf[1:3]
+```
 
