@@ -34,7 +34,6 @@ opts_knit$set(width=75)
 library(glmnet)
 library(BGLR)  # use the wheat dataset
 data(wheat)
-data(wheat)
 y <- wheat.Y[, 2]  # use the second phenotype
 W <- wheat.X
 dim(W)
