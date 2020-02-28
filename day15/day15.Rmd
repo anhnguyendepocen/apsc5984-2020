@@ -1,7 +1,7 @@
 ---
 title: "Genomic relationship matrix"
 author: "Gota Morota"
-date: "February 24, 2020"
+date: "February 26, 2020"
 output: 
     prettydoc::html_pretty:
       theme: architect
