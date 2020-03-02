@@ -58,7 +58,7 @@ sigma2e <- 0.002941943
   
 I <- diag(nrow(G)) # diagonal matrix
 Ginv <- solve(G) # inverse of G
-ghat <- solve(I + Ginv * (sigma2g/sigma2e))  %*% y # GBLUP
+ghat <- solve(I + Ginv * (sigma2e/sigma2g))  %*% y # GBLUP
 
 head(ghat)
 tail(ghat)
