@@ -142,7 +142,7 @@ sigma2e &lt;-<span class="st"> </span><span class="fl">0.002941943</span>
 
 I &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="kw">nrow</span>(G))  <span class="co"># diagonal matrix</span>
 Ginv &lt;-<span class="st"> </span><span class="kw">solve</span>(G)  <span class="co"># inverse of G</span>
-ghat &lt;-<span class="st"> </span><span class="kw">solve</span>(I <span class="op">+</span><span class="st"> </span>Ginv <span class="op">*</span><span class="st"> </span>(sigma2e<span class="op">/</span>sigma2g)) <span class="op">%*%</span><span class="st"> </span>y  <span class="co"># GBLUP</span>
+ghat &lt;-<span class="st"> </span><span class="kw">solve</span>(I <span class="op">+</span><span class="st"> </span>Ginv <span class="op">*</span><span class="st"> </span>(sigma2e<span class="op">/</span>sigma2g)) <span class="op">%*%</span><span class="st"> </span><span class="kw">matrix</span>(y)  <span class="co"># GBLUP</span>
 
 <span class="kw">head</span>(ghat)</code></pre></div>
 <pre><code>                   [,1]
@@ -160,9 +160,6 @@ A084291628  0.018702081
 A084291785  0.010346188
 A084291787 -0.011264509
 A084292044  0.024042050</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(y, ghat)</code></pre></div>
-<pre><code>          [,1]
-[1,] 0.5740984</code></pre>
 </div>
     </section>
   </div>
