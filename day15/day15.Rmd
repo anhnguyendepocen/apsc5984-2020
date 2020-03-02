@@ -46,7 +46,7 @@ dim(W2)
 ## VanRaden Method 1
 ```{r}
 W3 <- scale(W2, center = TRUE, scale = FALSE)
-G1 <- tcrossprod(W3) / sum(2*p*(1-p))
+G1 <- tcrossprod(W3) / sum(2*p2*(1-p2))
 
 # Genomic relationship between individuals 1 and 5
 G1[1,5]

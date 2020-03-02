@@ -133,14 +133,14 @@ W2 &lt;-<span class="st"> </span>W[, <span class="op">-</span>maf.index]
 <div id="vanraden-method-1" class="section level2">
 <h2>VanRaden Method 1</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W3 &lt;-<span class="st"> </span><span class="kw">scale</span>(W2, <span class="dt">center =</span> <span class="ot">TRUE</span>, <span class="dt">scale =</span> <span class="ot">FALSE</span>)
-G1 &lt;-<span class="st"> </span><span class="kw">tcrossprod</span>(W3)<span class="op">/</span><span class="kw">sum</span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span>p <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p))
+G1 &lt;-<span class="st"> </span><span class="kw">tcrossprod</span>(W3)<span class="op">/</span><span class="kw">sum</span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span>p2 <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p2))
 
 <span class="co"># Genomic relationship between individuals 1 and 5</span>
 G1[<span class="dv">1</span>, <span class="dv">5</span>]</code></pre></div>
-<pre><code>[1] 0.1185296</code></pre>
+<pre><code>[1] 0.1230863</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Genomic relationship between individuals 1 and 10</span>
 G1[<span class="dv">1</span>, <span class="dv">10</span>]</code></pre></div>
-<pre><code>[1] 0.1895535</code></pre>
+<pre><code>[1] 0.1968405</code></pre>
 </div>
 <div id="vanraden-method-2" class="section level2">
 <h2>VanRaden Method 2</h2>
