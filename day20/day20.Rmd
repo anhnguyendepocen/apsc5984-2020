@@ -1,0 +1,144 @@
+---
+title: "Single-marker GWAS"
+date: "March 6, 2020"
+author: "Gota Morota"
+output:
+   rmdformats::material:
+      highlight: kate
+      self_contained: no
+      code_folding: hide
+---
+
+
+# Rice data
+Download the Rice Diversity Panel data `RiceDiversity.44K.MSU6.Genotypes_PLINK.zip` from [http://ricediversity.org/data/sets/44kgwas/](http://ricediversity.org/data/sets/44kgwas/). 
+
+## Genotype data
+The genotype data set is provided in the PLINK format. We will use the `read_ped` function from the `BGLR` package to read the PLINK format files into the R environment. 
+```{r eval=FALSE, echo=TRUE}
+# install.packages("BGLR")
+library(BGLR)
+out<- read_ped("../data/Genotypes/sativas413.ped")
+p=out$p
+n=out$n
+out=out$x
+#Recode snp to 0,1,2 format using allele 1
+# 0 --> 0
+# 1 --> 1
+# 2 --> NA
+# 3 --> 2
+out[out==2]=NA
+out[out==3]=2
+W <- matrix(out, nrow=p, ncol=n, byrow=TRUE)
+W <- t(W) 
+dim(W) # # 413 x 36901
+```
+
+## Accession IDs 
+The accession IDs (individual IDs) are included in `.fam` file. 
+```{r eval=FALSE}
+# accession ID
+fam <-read.table("../data/Genotypes/sativas413.fam", header = FALSE, stringsAsFactors = FALSE)  
+head(fam)
+rownames(W) <- paste0("NSFTV_", fam$V2) # 413 x 36901
+```
+
+## Phenotype data
+We will use the `read.csv` function to read the phenotype file `Aus2013_PSA.csv`. This data set was collected using a high throughput phenomics platform (Lemnatec Scanalyzer 3D). From the images, the number of plant pixels was quantified and summed for each plant. This sum is referred as the projected shoot area (PSA), which will be used as a measure of shoot growth. PSA was recorded over a period of eight days for 361 rice lines. Plants that had abberant growth patterns were removed from this dataset. The data set consists of three independent experiments (Exp), each experiment has 357 lines (NSFTV.ID). In each experiment, a subset of < 100 lines were randomly selected and replicated twice (Rep). Thus, for the three experiments there will be some lines that have six replicates. The plants were randomly assigned to positions on the conveyor belts in two smart houses (credit: Malachy Campbell).
+```{r eval=FALSE, echo=TRUE}
+# install.packages("tidyverse")
+library(tidyverse)
+dat=read.csv("../data2/Phenotypes/Aus2013_PSA.csv", header = TRUE, stringsAsFactors = FALSE)
+View(dat)
+dim(dat)
+#Get the mean PSA at each time point
+dat2 <- dat %>%
+  group_by(NSFTV.ID, DayOfImaging) %>%
+  summarise(meanPSA = mean(PSA, na.rm = TRUE), SD = sd(PSA, na.rm = TRUE)) 
+dat2
+```
+
+## Plot of PSA curve
+```{r eval=FALSE, echo=TRUE}
+# Plot
+ggplot(dat2, aes(x=DayOfImaging, y=meanPSA)) + geom_smooth(method="loess") + xlab("Day of Imaging") + ylab("Mean PSA")
+```
+
+
+
+## Day == 7
+We will analyze day of imaging equals to 7. 
+```{r, eval=FALSE, echo=TRUE}
+y_d7 <- filter(dat2, DayOfImaging==7)
+y_d7 <- y_d7[match(rownames(W), y_d7$NSFTV.ID),] # match IDs with SNPs  413x33
+
+na.index <- is.na(y_d7$NSFTV.ID)
+y_d7 <- y_d7[!na.index,] # 361 x 22
+W <- W[!na.index,] # 361 x 36901
+dim(W)
+dim(y_d7)
+table(rownames(W) == y_d7$NSFTV.ID)
+head(rownames(W))
+head(y_d7$NSFTV.ID)
+```
+
+
+
+
+
+# Population structure
+This data set is known to exhibit a subpopulation structure as the panel contains indica, aus, temperate japonica, tropical japonica, aromatic, and highly admixed accessions. We will create a PC plot to visualize the extent of population structure in rice. 
+```{r eval=FALSE}
+# PC plots
+gp <-read.csv("http://ricediversity.org/data/sets/44kgwas/RiceDiversity.44K.germplasm.csv", header = TRUE, skip = 1,  stringsAsFactors = FALSE)   # 431 x 12
+gp$NSFTV.ID <- paste0("NSFTV_", gp$NSFTV.ID)
+gp2 <- gp[match(y_d7$NSFTV.ID, gp$NSFTV.ID), ]
+table(y_d7$NSFTV.ID == gp2$NSFTV.ID)
+
+	
+plot(gp2$PC1, gp2$PC2, xlab="PC1", ylab="PC2", col=c(1:6)[factor(gp2$Sub.population)])
+legend(x="topleft", legend = levels(factor(gp2$Sub.population)), col=c(1:6), pch=1, cex=0.6)
+```
+
+
+
+## Genotype imputation
+Replace missing marker genotypes with mean values. Then store the marker genotypes in a matrix object `W`. 
+```{r eval=FALSE,  echo=TRUE}
+for (j in 1:ncol(W)){
+  W[,j] <- ifelse(is.na(W[,j]), mean(W[,j], na.rm=TRUE), W[,j])
+}
+```
+
+
+# Genome-wide association studies
+Fit a single-marker-based linear mixed model  by using the `GWAS` function in the [rrBLUP](https://cran.r-project.org/web/packages/rrBLUP/index.html) R package. Report the -log10 of p-values for SNP effects. 
+```{r eval=FALSE, echo=TRUE}
+# install.packages("rrBLUP")
+library(rrBLUP)
+map <- read.table("../data/Genotypes/sativas413.map", header = FALSE, stringsAsFactors = FALSE)
+?GWAS
+my.geno <- data.frame(marker=map[,2], chrom=map[,1], pos=map[,4], t(W-1), check.names = FALSE) # W = \in{-1, 0, 1}
+my.pheno <- data.frame(NSFTV_ID=y_d7$NSFTV.ID, y=y_d7$meanPSA) # Day 7
+
+rel_d7 <- GWAS(my.pheno, my.geno, min.MAF=0.05, P3D=TRUE, plot=FALSE)
+head(rel_d7$y)
+tail(rel_d7$y)
+```
+
+
+## Manhattan plot
+```{r eval=FALSE, echo=TRUE}
+# install.packages("qqman")
+library(qqman)
+manhattan(x = rel_d7, chr = "chrom", bp = "pos", p = "y", snp = "marker", col = c("blue4", "orange3"), logp = FALSE)
+```
+
+
+
+
+
+
+
+
+

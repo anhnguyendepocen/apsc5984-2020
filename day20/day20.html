@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Gota Morota" />
+
+
+<title>Single-marker GWAS</title>
+<!-- Material Design fonts -->
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<script src="day20_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="day20_files/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+<script src="day20_files/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+<script src="day20_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="day20_files/navigation-1.1/tabsets.js"></script>
+<script src="day20_files/navigation-1.1/codefolding.js"></script>
+<link href="day20_files/magnific-popup-1.1.0/magnific-popup.css" rel="stylesheet" />
+<script src="day20_files/magnific-popup-1.1.0/jquery.magnific-popup.min.js"></script>
+<link href="day20_files/bootstrap_material-0.1/bootstrap-material-design.min.css" rel="stylesheet" />
+<link href="day20_files/bootstrap_material-0.1/ripples.min.css" rel="stylesheet" />
+<script src="day20_files/bootstrap_material-0.1/material.min.js"></script>
+<script src="day20_files/bootstrap_material-0.1/ripples.min.js"></script>
+<link href="day20_files/material-0.1/material.css" rel="stylesheet" />
+<script src="day20_files/material-0.1/material.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #ffffff; color: #1f1c1b; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #ffffff; color: #a0a0a0; border-right: 1px solid #a0a0a0; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #1f1c1b; background-color: #ffffff; }
+code > span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code > span.dt { color: #0057ae; } /* DataType */
+code > span.dv { color: #b08000; } /* DecVal */
+code > span.bn { color: #b08000; } /* BaseN */
+code > span.fl { color: #b08000; } /* Float */
+code > span.cn { color: #aa5500; } /* Constant */
+code > span.ch { color: #924c9d; } /* Char */
+code > span.sc { color: #3daee9; } /* SpecialChar */
+code > span.st { color: #bf0303; } /* String */
+code > span.vs { color: #bf0303; } /* VerbatimString */
+code > span.ss { color: #ff5500; } /* SpecialString */
+code > span.im { color: #ff5500; } /* Import */
+code > span.co { color: #898887; } /* Comment */
+code > span.do { color: #607880; } /* Documentation */
+code > span.an { color: #ca60ca; } /* Annotation */
+code > span.cv { color: #0095ff; } /* CommentVar */
+code > span.ot { color: #006e28; } /* Other */
+code > span.fu { color: #644a9b; } /* Function */
+code > span.va { color: #0057ae; } /* Variable */
+code > span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #1f1c1b; } /* Operator */
+code > span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code > span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code > span.pp { color: #006e28; } /* Preprocessor */
+code > span.at { color: #0057ae; } /* Attribute */
+code > span.re { color: #0057ae; } /* RegionMarker */
+code > span.in { color: #b08000; } /* Information */
+code > span.wa { color: #bf0303; } /* Warning */
+code > span.al { color: #bf0303; font-weight: bold; } /* Alert */
+code > span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code > span. { color: #1f1c1b; } /* Normal */
+</style>
+
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="header-panel shadow z-2">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-3">
+        <div id="header">
+    <h1 class="title">Single-marker GWAS</h1>
+                <h4 class="author">Gota Morota</h4>
+                <h4 class="date">March 6, 2020</h4>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+<div class="container-fluid main-container">
+    <div class="row">
+      <nav class="col-xs-3 menu">
+        <div id="toc">
+        <ul>
+        <li><a href="#rice-data">Rice data</a></li>
+        <li><a href="#population-structure">Population structure</a></li>
+        <li><a href="#genome-wide-association-studies">Genome-wide association studies</a></li>
+        </ul>
+        </div>
+        
+        
+        
+      </nav>
+     <div class="pages col-xs-9">
+     <div class="row">
+       <div class="col-xs-10">
+
+
+
+<div id="rice-data" class="section level1">
+<h1>Rice data</h1>
+<p>Download the Rice Diversity Panel data <code>RiceDiversity.44K.MSU6.Genotypes_PLINK.zip</code> from <a href="http://ricediversity.org/data/sets/44kgwas/" class="uri">http://ricediversity.org/data/sets/44kgwas/</a>.</p>
+<div id="genotype-data" class="section level2">
+<h2>Genotype data</h2>
+<p>The genotype data set is provided in the PLINK format. We will use the <code>read_ped</code> function from the <code>BGLR</code> package to read the PLINK format files into the R environment.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;BGLR&quot;)</span>
+<span class="kw">library</span>(BGLR)
+out&lt;-<span class="st"> </span><span class="kw">read_ped</span>(<span class="st">&quot;../data/Genotypes/sativas413.ped&quot;</span>)
+p=out<span class="op">$</span>p
+n=out<span class="op">$</span>n
+out=out<span class="op">$</span>x
+<span class="co">#Recode snp to 0,1,2 format using allele 1</span>
+<span class="co"># 0 --&gt; 0</span>
+<span class="co"># 1 --&gt; 1</span>
+<span class="co"># 2 --&gt; NA</span>
+<span class="co"># 3 --&gt; 2</span>
+out[out<span class="op">==</span><span class="dv">2</span>]=<span class="ot">NA</span>
+out[out<span class="op">==</span><span class="dv">3</span>]=<span class="dv">2</span>
+W &lt;-<span class="st"> </span><span class="kw">matrix</span>(out, <span class="dt">nrow=</span>p, <span class="dt">ncol=</span>n, <span class="dt">byrow=</span><span class="ot">TRUE</span>)
+W &lt;-<span class="st"> </span><span class="kw">t</span>(W) 
+<span class="kw">dim</span>(W) <span class="co"># # 413 x 36901</span></code></pre></div>
+</div>
+<div id="accession-ids" class="section level2">
+<h2>Accession IDs</h2>
+<p>The accession IDs (individual IDs) are included in <code>.fam</code> file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># accession ID</span>
+fam &lt;-<span class="kw">read.table</span>(<span class="st">&quot;../data/Genotypes/sativas413.fam&quot;</span>, <span class="dt">header =</span> <span class="ot">FALSE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)  
+<span class="kw">head</span>(fam)
+<span class="kw">rownames</span>(W) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;NSFTV_&quot;</span>, fam<span class="op">$</span>V2) <span class="co"># 413 x 36901</span></code></pre></div>
+</div>
+<div id="phenotype-data" class="section level2">
+<h2>Phenotype data</h2>
+<p>We will use the <code>read.csv</code> function to read the phenotype file <code>Aus2013_PSA.csv</code>. This data set was collected using a high throughput phenomics platform (Lemnatec Scanalyzer 3D). From the images, the number of plant pixels was quantified and summed for each plant. This sum is referred as the projected shoot area (PSA), which will be used as a measure of shoot growth. PSA was recorded over a period of eight days for 361 rice lines. Plants that had abberant growth patterns were removed from this dataset. The data set consists of three independent experiments (Exp), each experiment has 357 lines (NSFTV.ID). In each experiment, a subset of &lt; 100 lines were randomly selected and replicated twice (Rep). Thus, for the three experiments there will be some lines that have six replicates. The plants were randomly assigned to positions on the conveyor belts in two smart houses (credit: Malachy Campbell).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;tidyverse&quot;)</span>
+<span class="kw">library</span>(tidyverse)
+dat=<span class="kw">read.csv</span>(<span class="st">&quot;../data2/Phenotypes/Aus2013_PSA.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+<span class="kw">View</span>(dat)
+<span class="kw">dim</span>(dat)
+<span class="co">#Get the mean PSA at each time point</span>
+dat2 &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(NSFTV.ID, DayOfImaging) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">meanPSA =</span> <span class="kw">mean</span>(PSA, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>), <span class="dt">SD =</span> <span class="kw">sd</span>(PSA, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) 
+dat2</code></pre></div>
+</div>
+<div id="plot-of-psa-curve" class="section level2">
+<h2>Plot of PSA curve</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Plot</span>
+<span class="kw">ggplot</span>(dat2, <span class="kw">aes</span>(<span class="dt">x=</span>DayOfImaging, <span class="dt">y=</span>meanPSA)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;loess&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Day of Imaging&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Mean PSA&quot;</span>)</code></pre></div>
+</div>
+<div id="day-7" class="section level2">
+<h2>Day == 7</h2>
+<p>We will analyze day of imaging equals to 7.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y_d7 &lt;-<span class="st"> </span><span class="kw">filter</span>(dat2, DayOfImaging<span class="op">==</span><span class="dv">7</span>)
+y_d7 &lt;-<span class="st"> </span>y_d7[<span class="kw">match</span>(<span class="kw">rownames</span>(W), y_d7<span class="op">$</span>NSFTV.ID),] <span class="co"># match IDs with SNPs  413x33</span>
+
+na.index &lt;-<span class="st"> </span><span class="kw">is.na</span>(y_d7<span class="op">$</span>NSFTV.ID)
+y_d7 &lt;-<span class="st"> </span>y_d7[<span class="op">!</span>na.index,] <span class="co"># 361 x 22</span>
+W &lt;-<span class="st"> </span>W[<span class="op">!</span>na.index,] <span class="co"># 361 x 36901</span>
+<span class="kw">dim</span>(W)
+<span class="kw">dim</span>(y_d7)
+<span class="kw">table</span>(<span class="kw">rownames</span>(W) <span class="op">==</span><span class="st"> </span>y_d7<span class="op">$</span>NSFTV.ID)
+<span class="kw">head</span>(<span class="kw">rownames</span>(W))
+<span class="kw">head</span>(y_d7<span class="op">$</span>NSFTV.ID)</code></pre></div>
+</div>
+</div>
+<div id="population-structure" class="section level1">
+<h1>Population structure</h1>
+<p>This data set is known to exhibit a subpopulation structure as the panel contains indica, aus, temperate japonica, tropical japonica, aromatic, and highly admixed accessions. We will create a PC plot to visualize the extent of population structure in rice.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># PC plots</span>
+gp &lt;-<span class="kw">read.csv</span>(<span class="st">&quot;http://ricediversity.org/data/sets/44kgwas/RiceDiversity.44K.germplasm.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">skip =</span> <span class="dv">1</span>,  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)   <span class="co"># 431 x 12</span>
+gp<span class="op">$</span>NSFTV.ID &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;NSFTV_&quot;</span>, gp<span class="op">$</span>NSFTV.ID)
+gp2 &lt;-<span class="st"> </span>gp[<span class="kw">match</span>(y_d7<span class="op">$</span>NSFTV.ID, gp<span class="op">$</span>NSFTV.ID), ]
+<span class="kw">table</span>(y_d7<span class="op">$</span>NSFTV.ID <span class="op">==</span><span class="st"> </span>gp2<span class="op">$</span>NSFTV.ID)
+
+    
+<span class="kw">plot</span>(gp2<span class="op">$</span>PC1, gp2<span class="op">$</span>PC2, <span class="dt">xlab=</span><span class="st">&quot;PC1&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;PC2&quot;</span>, <span class="dt">col=</span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>)[<span class="kw">factor</span>(gp2<span class="op">$</span>Sub.population)])
+<span class="kw">legend</span>(<span class="dt">x=</span><span class="st">&quot;topleft&quot;</span>, <span class="dt">legend =</span> <span class="kw">levels</span>(<span class="kw">factor</span>(gp2<span class="op">$</span>Sub.population)), <span class="dt">col=</span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>), <span class="dt">pch=</span><span class="dv">1</span>, <span class="dt">cex=</span><span class="fl">0.6</span>)</code></pre></div>
+<div id="genotype-imputation" class="section level2">
+<h2>Genotype imputation</h2>
+<p>Replace missing marker genotypes with mean values. Then store the marker genotypes in a matrix object <code>W</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(W)){
+  W[,j] &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(W[,j]), <span class="kw">mean</span>(W[,j], <span class="dt">na.rm=</span><span class="ot">TRUE</span>), W[,j])
+}</code></pre></div>
+</div>
+</div>
+<div id="genome-wide-association-studies" class="section level1">
+<h1>Genome-wide association studies</h1>
+<p>Fit a single-marker-based linear mixed model by using the <code>GWAS</code> function in the <a href="https://cran.r-project.org/web/packages/rrBLUP/index.html">rrBLUP</a> R package. Report the -log10 of p-values for SNP effects.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;rrBLUP&quot;)</span>
+<span class="kw">library</span>(rrBLUP)
+map &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;../data/Genotypes/sativas413.map&quot;</span>, <span class="dt">header =</span> <span class="ot">FALSE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+?GWAS
+my.geno &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">marker=</span>map[,<span class="dv">2</span>], <span class="dt">chrom=</span>map[,<span class="dv">1</span>], <span class="dt">pos=</span>map[,<span class="dv">4</span>], <span class="kw">t</span>(W<span class="op">-</span><span class="dv">1</span>), <span class="dt">check.names =</span> <span class="ot">FALSE</span>) <span class="co"># W = \in{-1, 0, 1}</span>
+my.pheno &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">NSFTV_ID=</span>y_d7<span class="op">$</span>NSFTV.ID, <span class="dt">y=</span>y_d7<span class="op">$</span>meanPSA) <span class="co"># Day 7</span>
+
+rel_d7 &lt;-<span class="st"> </span><span class="kw">GWAS</span>(my.pheno, my.geno, <span class="dt">min.MAF=</span><span class="fl">0.05</span>, <span class="dt">P3D=</span><span class="ot">TRUE</span>, <span class="dt">plot=</span><span class="ot">FALSE</span>)
+<span class="kw">head</span>(rel_d7<span class="op">$</span>y)
+<span class="kw">tail</span>(rel_d7<span class="op">$</span>y)</code></pre></div>
+<div id="manhattan-plot" class="section level2">
+<h2>Manhattan plot</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;qqman&quot;)</span>
+<span class="kw">library</span>(qqman)
+<span class="kw">manhattan</span>(<span class="dt">x =</span> rel_d7, <span class="dt">chr =</span> <span class="st">&quot;chrom&quot;</span>, <span class="dt">bp =</span> <span class="st">&quot;pos&quot;</span>, <span class="dt">p =</span> <span class="st">&quot;y&quot;</span>, <span class="dt">snp =</span> <span class="st">&quot;marker&quot;</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;blue4&quot;</span>, <span class="st">&quot;orange3&quot;</span>), <span class="dt">logp =</span> <span class="ot">FALSE</span>)</code></pre></div>
+</div>
+</div>
+
+    </div>
+    <div class="col-xs-2">
+        <div class="btn-toolbar">
+    <div class="btn-group">
+    <a href="#" class="btn btn-raised btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="text-muted">Code</span> <span class="text-muted caret"></span></a>
+    <ul class="dropdown-menu" style="min-width: 50px;">
+    <li><a id="rmd-show-all-code" href="#">Show All</a></li>
+    <li><a id="rmd-hide-all-code" href="#">Hide All</a></li>
+    </ul>
+    </div>
+    </div>
+        </div>
+  </div>
+  </div>
+  </div>
+  <div class="row">
+    </div>
+  </div>
+
+<script>
+$(document).ready(function () {
+  // add bootstrap table styles to pandoc tables
+  $('tr.header').parent('thead').parent('table').addClass('table table-striped table-hover');
+
+    var images = $('.pages img');
+  images.filter(function() {
+      if ($(this).parent().attr("class") == "figure") {
+          return(false)
+      } else {
+          return(true);
+      }
+  }).wrap("<div class='figure'></div>");
+  images.addClass("image-thumb").wrap("<div class='panel-body'></div>");
+  $('.figure p.caption').wrap("<div class='panel-footer'></div>");
+  $('.figure').addClass('panel panel-default');
+  
+    $('.pages img')
+ 	  .addClass("image-lb");
+  $('.pages').magnificPopup({
+	      type:'image',
+	      closeOnContentClick: false,
+	      closeBtnInside: false,
+        delegate: 'img',
+	      gallery: {enabled: false },
+          removalDelay: 500,
+          callbacks: {
+              beforeOpen: function() {
+                // just a hack that adds mfp-anim class to markup
+                this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
+              }
+          },
+          mainClass: 'mfp-move-from-top',
+	      image: {
+	        verticalFit: true,
+            titleSrc: 'alt'
+	      }
+ 	    });
+ 	
+    
+    $('#toc ul li').first().addClass("active");
+    $('#toc ul li').attr("data-target", function() {
+        return($(this).children("a").attr("href"));
+    })
+    $('body .section.level1').first().addClass("active");
+    
+    $('#toc a[href*="#"]').click(function() {
+
+      var id = $(this).attr("href");
+      if (id === "#") return;
+      if (id.substring(0, 8) === "#dyntab-") return;
+      toggle_page(id);
+
+      // Menu
+      var menu_entry = $(".menu li[data-target='"+id+"']");
+      menu_entry.addClass("active");
+      $(".menu li").not(menu_entry).removeClass("active"); 
+      
+
+    });
+
+    function toggle_page(id) {
+      $(".page").not(page).removeClass("active").hide();
+      window.page = id;
+      var page = $(window.page);
+      window.location.hash = window.page;
+      //$(this).addClass("active");
+
+      page.show();
+
+      var totop = setInterval(function () {
+        $(".pages").animate({scrollTop: 0}, 0);
+      }, 10);
+
+      setTimeout(function () {
+        page.addClass("active");
+        setTimeout(function () {
+          clearInterval(totop);
+        }, 1000);
+      }, 100);
+
+      window.dispatchEvent(new Event('resize'));
+
+    }
+
+
+    $(".menu li").click(function () {
+
+      toggle_page($(this).data("target"));
+
+      // Menu
+      if (!$(this).data("target")) return;
+      if ($(this).is(".active")) return;
+      $(".menu li").not($(this)).removeClass("active");
+      $(this).addClass("active");
+
+    });
+  
+    
+
+
+    window.page = window.location.hash;
+    if (window.page != "") {
+      $(".menu").find("li[data-target=" + window.page + "]").trigger("click");
+    }
+
+    /* init material bootstrap js */
+    $.material.init();
+});
+</script>
+
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
