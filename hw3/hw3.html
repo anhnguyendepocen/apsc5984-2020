@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Gota Morota" />
+
+<meta name="date" content="2020-03-23" />
+
+<title>APSC 5984 Complex Trait Genomics</title>
+
+<script src="hw3_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="hw3_files/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+<script src="hw3_files/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+<script src="hw3_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="hw3_files/navigation-1.1/tabsets.js"></script>
+<script src="hw3_files/navigation-1.1/codefolding.js"></script>
+<link href="hw3_files/magnific-popup-1.1.0/magnific-popup.css" rel="stylesheet" />
+<script src="hw3_files/magnific-popup-1.1.0/jquery.magnific-popup.min.js"></script>
+<link href="hw3_files/readthedown-0.1/readthedown.css" rel="stylesheet" />
+<script src="hw3_files/readthedown-0.1/readthedown.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #ffffff; color: #1f1c1b; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #ffffff; color: #a0a0a0; border-right: 1px solid #a0a0a0; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #1f1c1b; background-color: #ffffff; }
+code > span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code > span.dt { color: #0057ae; } /* DataType */
+code > span.dv { color: #b08000; } /* DecVal */
+code > span.bn { color: #b08000; } /* BaseN */
+code > span.fl { color: #b08000; } /* Float */
+code > span.cn { color: #aa5500; } /* Constant */
+code > span.ch { color: #924c9d; } /* Char */
+code > span.sc { color: #3daee9; } /* SpecialChar */
+code > span.st { color: #bf0303; } /* String */
+code > span.vs { color: #bf0303; } /* VerbatimString */
+code > span.ss { color: #ff5500; } /* SpecialString */
+code > span.im { color: #ff5500; } /* Import */
+code > span.co { color: #898887; } /* Comment */
+code > span.do { color: #607880; } /* Documentation */
+code > span.an { color: #ca60ca; } /* Annotation */
+code > span.cv { color: #0095ff; } /* CommentVar */
+code > span.ot { color: #006e28; } /* Other */
+code > span.fu { color: #644a9b; } /* Function */
+code > span.va { color: #0057ae; } /* Variable */
+code > span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #1f1c1b; } /* Operator */
+code > span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code > span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code > span.pp { color: #006e28; } /* Preprocessor */
+code > span.at { color: #0057ae; } /* Attribute */
+code > span.re { color: #0057ae; } /* RegionMarker */
+code > span.in { color: #b08000; } /* Information */
+code > span.wa { color: #bf0303; } /* Warning */
+code > span.al { color: #bf0303; font-weight: bold; } /* Alert */
+code > span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code > span. { color: #1f1c1b; } /* Normal */
+</style>
+
+
+</head>
+
+<body>
+
+
+<div id="content" data-toggle="wy-nav-shift">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+<nav id="nav-top" role="navigation" aria-label="top navigation">
+    <a role="button" href="#" data-toggle="wy-nav-top"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+</nav>
+
+
+<div id="header">
+<h1 class="title">APSC 5984 Complex Trait Genomics</h1>
+<h1 class="subtitle">Homework assignment 3</h1>
+</div>
+
+
+<div id="table-of-contents">
+    <h2><a href="#content">APSC 5984 Complex Trait Genomics</a></h2>
+    <div id="text-table-of-contents">
+      <ul>
+      <li><a href="#wheat-data">Wheat data</a><ul>
+      <li><a href="#question-1">Question 1</a></li>
+      <li><a href="#question-2">Question 2</a></li>
+      <li><a href="#question-3">Question 3</a></li>
+      <li><a href="#question-4">Question 4</a></li>
+      </ul></li>
+      </ul>
+    </div>
+</div>
+
+<div id="main">
+<div id="due-date" class="section level3">
+<h3>Due date</h3>
+<p>Monday, March 30, 5pm</p>
+</div>
+<div id="wheat-data" class="section level1">
+<h1>Wheat data</h1>
+<p>We will analyze the wheat data from Pérez-Rodríguez et al., (2012). (<a href="http://www.g3journal.org/content/2/12/1595">doi:10.1534/g3.112.003665</a>). Download the supporting data <a href="http://www.g3journal.org/content/2/12/1595.supplemental">File S1</a>. The R object <code>YLD_1.RData</code> includes 306 elite wheat lines genotyped with 1,717 diversity array technology (DArT) markers. Note that the <a href="https://en.wikipedia.org/wiki/Diversity_Arrays_Technology">DArT marker</a> is coded either 0 or 1 indicating the presence or absence of allele at a given locus. The marker information is in the <code>Marker</code> variable.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())
+<span class="kw">load</span>(<span class="st">&quot;data_G3/YLD/YLD_1.RData&quot;</span>)
+<span class="kw">ls</span>()</code></pre></div>
+<pre><code>[1] &quot;A&quot;         &quot;Markers&quot;   &quot;Markers_w&quot; &quot;weights&quot;   &quot;y&quot;         &quot;y_w&quot;      </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">W &lt;-<span class="st"> </span>Markers
+<span class="kw">dim</span>(W)</code></pre></div>
+<pre><code>[1]  306 1717</code></pre>
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>Read <a href="https://www.cambridge.org/core/journals/genetics-research/article/markerassisted-selection-using-ridge-regression/ADF4BCE837CB074466273CEAD345C874">Whittaker et al. (2000)</a> and summmarize the paper in 300 - 500 words.</p>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>Recall that ridge estimates can be expressed as <span class="math inline">\(\hat{\beta}^{ridge}_j = \frac{\sum^n_{i=1} x^2_{ij} }{\sum^n_{i=1} x^2_{ij} + \lambda} \times \hat{\beta}^{ols}_{j}\)</span>. Create a centered genotype matrix <code>Wc</code>. Calculate the minor allele frequencies (MAF) and the amounts of shrinkage for all markers. Plot MAF on the X axis and the amounts of shrinkage on the Y axis. Interpret the figure you obtained. Use <span class="math inline">\(\lambda = 100\)</span>.</p>
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>Fit a ridge regression using the <a href="https://cran.r-project.org/web/packages/glmnet/index.html">glmnet</a> R package. Create a scatterplot of marker effects when <span class="math inline">\(\lambda = 10\)</span> (y-axix) and <span class="math inline">\(\lambda = 0.1\)</span> (x-axis). Interpret the role of <span class="math inline">\(\lambda\)</span> in the ridge regression. Use the variables <code>y</code> and <code>W</code>.</p>
+</div>
+<div id="question-4" class="section level2">
+<h2>Question 4</h2>
+<p>Contrary to the ridge regression, the LASSO shrinks marker effects exactly equal to zero. Therefore, the LASSO can be used as a subset selection method.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">aL &lt;-<span class="st"> </span><span class="kw">glmnet</span>(W, y, <span class="dt">alpha =</span> <span class="dv">1</span>)
+<span class="kw">plot</span>(aL<span class="op">$</span>lambda, aL<span class="op">$</span>df, <span class="dt">ylab =</span> <span class="st">&quot;The number of nonzero markers&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;Lambda&quot;</span>)</code></pre></div>
+<p><img src="hw3_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
+<p>This figure shows the relationship between the sequence of <span class="math inline">\(\lambda\)</span> values and the number of nonzero markers. Interpret the figure in the context of GWAS.</p>
+</div>
+</div>
+</div>
+
+
+</div>
+
+<div id="postamble" data-toggle="wy-nav-shift" class="status">
+<p class="author"><span class="glyphicon glyphicon-user"></span> Gota Morota</p>
+<p class="date"><span class="glyphicon glyphicon-calendar"></span> March 23, 2020</p>
+</div>
+
+
+<script>
+$(document).ready(function () {
+ 	  });
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
