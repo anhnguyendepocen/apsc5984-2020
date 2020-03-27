@@ -1,0 +1,150 @@
+---
+title: "Genomic BLUP (GBLUP)"
+author: "Gota Morota"
+date: "March 27, 2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+
+This example illustrates how to fit genomic BLUP (GBLUP) using the [rrBLUP](https://cran.r-project.org/web/packages/rrBLUP/index.html) R package, two-step apporach, and mixed model equations. 
+
+# rrBLUP
+
+## Data 
+We will use the wheat data available in the [BGLR](https://cran.r-project.org/web/packages/BGLR/index.html) R package. 
+```{r, eval=FALSE}
+rm(list=ls())
+library(BGLR)
+data(wheat)
+?wheat
+y <- 10 + wheat.Y[,2] # use the second phenotype
+W <- wheat.X
+```
+
+
+## Genomic relationship matrix
+```{r, eval=FALSE}
+p <- colMeans(W)
+maf <- ifelse(p > 0.5, 1 - p, p)  # or pmin(p, 1-p)
+maf.index <- which(maf < 0.1)
+p2 <- p[-maf.index]
+W2 <- W[, -maf.index]
+dim(W2)
+
+Wcs <- scale(W2, center = TRUE, scale = TRUE)
+G <- tcrossprod(Wcs)/ncol(Wcs)
+```
+
+
+## Genomic BLUP
+The `mixed.solve()` function implements GBLUP. 
+```{r, eval=FALSE}
+# install.packages("rrBLUP")
+library(rrBLUP)
+?mixed.solve
+fit <-  mixed.solve(y = y, K = G)
+
+fit$beta # BLUE (intercept)
+
+head(fit$u) # BLUP (genetic values, breeding values)
+
+fit$Vu # additive genetic variance
+
+fit$Ve # residual variance
+
+lambda <- fit$Ve / fit$Vu # lambda
+lambda
+```
+
+
+
+
+# Two-step approach
+The fixed effect incidence matrix $\mathbf{X}$ only includes the intercept. 
+```{r eval=FALSE, echo=TRUE}
+X <- matrix(1, nrow = nrow(G), ncol=1)
+Z <- diag(nrow(G))
+I <- diag(nrow(G))
+Ginv <- solve(G)
+V <- G*fit$Vu + I*fit$Ve
+Vinv <- solve(V)
+
+b <- solve(t(X) %*% Vinv %*% X) %*% t(X) %*% Vinv %*% y # BLUE (intercept)
+g <- solve(I + Ginv*lambda) %*% (y - X %*% b) # BLUP (genetic values)
+
+b
+head(g)
+tail(g)
+```
+
+
+# Mixed model equations (MME)
+```{r eval=FALSE, echo=TRUE}
+XtX <- t(X) %*% X # X'X
+XtZ <- t(X) %*% Z # X'Z
+ZtX <- t(Z) %*% X # Z'X
+ZtZ <- t(Z) %*% Z # Z'Z
+Xty <- t(X) %*% y # X'y
+Zty <- t(Z) %*% y # Z'y
+
+LHS1 <- cbind(XtX, XtZ)
+LHS2 <- cbind(ZtX, ZtZ + Ginv * lambda)
+LHS <- rbind(LHS1, LHS2) # left hand side of MME
+RHS <- rbind(Xty, Zty) # right hand side of MME
+
+sol <- solve(LHS, RHS) # solve for BLUE and BLUP
+
+# BLUE (intercept)
+sol[1, ]
+
+# BLUP (genetic values)
+sol[-1, ]
+head(sol[-1,])
+tail(sol)
+```
+
+
+# Comparison
+We will compare the results obtained from the rrBLUP, two-step approach, and MME. Verify that they are all equal. 
+
+Intercept.
+```{r eval=FALSE, echo=TRUE}
+fit$beta # rrBLUP
+b # Two-step approach
+sol[1,] # MME
+```
+
+The first six estimates of the genetic values. 
+```{r eval=FALSE, echo=TRUE}
+head(fit$u) # rrBLUP
+head(c(g)) # Two-step approach
+head(sol[-1,]) # MME
+```
+
+The last six estimates of the genetic values. 
+```{r eval=FALSE, echo=TRUE}
+tail(fit$u) # rrBLUP
+tail(c(g)) # Two-step approach
+tail(sol[-1,]) # MME
+```

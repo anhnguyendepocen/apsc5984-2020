@@ -13,9 +13,9 @@
 
 <meta name="author" content="Gota Morota" />
 
-<meta name="date" content="2020-03-25" />
+<meta name="date" content="2020-03-27" />
 
-<title>Ridge regression BLUP (RRBLUP)</title>
+<title>Weighted least squares single-marker GWAS</title>
 
 
 
@@ -97,57 +97,138 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <header>
 <div class="inner">
-<h1 class="title toc-ignore">Ridge regression BLUP (RRBLUP)</h1>
+<h1 class="title toc-ignore">Weighted least squares single-marker GWAS</h1>
 <h3 class="author">Gota Morota</h3>
-<h3 class="date">March 25, 2020</h3>
+<h3 class="date">March 27, 2020</h3>
 </div>
 </header>
 
 
 <div id="TOC" class="toc">
 <ul>
+<li><a href="#weighted-least-squares-for-single-marker-gwas">Weighted least squares for single-marker GWAS</a><ul>
 <li><a href="#data">Data</a></li>
-<li><a href="#ridge-regression-blup">Ridge regression BLUP</a></li>
+<li><a href="#genomic-relationship-matrix">Genomic relationship matrix</a></li>
+<li><a href="#varinace-component-estimates">Varinace component estimates</a></li>
+<li><a href="#weighted-least-squares">Weighted least squares</a></li>
+</ul></li>
 <li><a href="#results">Results</a></li>
+<li><a href="#two-step-approach">Two-step approach</a></li>
+<li><a href="#mixed-model-equations-mme">Mixed model equations (MME)</a></li>
 </ul>
 </div>
 
 <div id="content-wrapper">
   <div class="inner clearfix">
     <section id="main-content">
-<p>This example illustrates how to fit ridge regression BLUP using the <a href="https://cran.r-project.org/web/packages/rrBLUP/index.html">rrBLUP</a> R package.</p>
+<p>This example illustrates how to fit weighted least squares for single-marker GWAS.</p>
+<div id="weighted-least-squares-for-single-marker-gwas" class="section level1">
+<h1>Weighted least squares for single-marker GWAS</h1>
 <div id="data" class="section level2">
 <h2>Data</h2>
-<p>We will use the maize data available in the <a href="https://rdrr.io/cran/synbreedData/">synbreedData</a> R package.</p>
+<p>We will use the wheat data available in the <a href="https://cran.r-project.org/web/packages/BGLR/index.html">BGLR</a> R package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())
-<span class="kw">library</span>(synbreedData)
-<span class="kw">data</span>(maize)
-<span class="st">`</span><span class="dt">?</span><span class="st">`</span>(maize)
-<span class="kw">names</span>(maize)
-y &lt;-<span class="st"> </span>maize<span class="op">$</span>pheno[, <span class="dv">1</span>, <span class="dv">1</span>]
-W &lt;-<span class="st"> </span>maize<span class="op">$</span>geno
-W[W <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] =<span class="st"> </span><span class="op">-</span><span class="dv">1</span>  <span class="co"># convert 0 to -1</span>
-map &lt;-<span class="st"> </span>maize<span class="op">$</span>map</code></pre></div>
+<span class="kw">library</span>(BGLR)
+<span class="kw">data</span>(wheat)
+<span class="st">`</span><span class="dt">?</span><span class="st">`</span>(wheat)
+y &lt;-<span class="st"> </span><span class="dv">10</span> <span class="op">+</span><span class="st"> </span>wheat.Y[, <span class="dv">2</span>]  <span class="co"># use the second phenotype</span>
+W &lt;-<span class="st"> </span>wheat.X</code></pre></div>
 </div>
-<div id="ridge-regression-blup" class="section level1">
-<h1>Ridge regression BLUP</h1>
-<p>The <code>mixed.solve()</code> function implements ridge regression BLUP.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages('rrBLUP')</span>
-<span class="kw">library</span>(rrBLUP)
+<div id="genomic-relationship-matrix" class="section level2">
+<h2>Genomic relationship matrix</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">colMeans</span>(W)
+maf &lt;-<span class="st"> </span><span class="kw">ifelse</span>(p <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.5</span>, <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p, p)  <span class="co"># or pmin(p, 1-p)</span>
+maf.index &lt;-<span class="st"> </span><span class="kw">which</span>(maf <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.1</span>)
+p2 &lt;-<span class="st"> </span>p[<span class="op">-</span>maf.index]
+W2 &lt;-<span class="st"> </span>W[, <span class="op">-</span>maf.index]
+<span class="kw">dim</span>(W2)
+
+Wcs &lt;-<span class="st"> </span><span class="kw">scale</span>(W2, <span class="dt">center =</span> <span class="ot">TRUE</span>, <span class="dt">scale =</span> <span class="ot">TRUE</span>)
+G &lt;-<span class="st"> </span><span class="kw">tcrossprod</span>(Wcs)<span class="op">/</span><span class="kw">ncol</span>(Wcs)</code></pre></div>
+</div>
+<div id="varinace-component-estimates" class="section level2">
+<h2>Varinace component estimates</h2>
+<p>We will use the <a href="https://cran.r-project.org/web/packages/rrBLUP/index.html">rrBLUP</a> R package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rrBLUP)
 <span class="st">`</span><span class="dt">?</span><span class="st">`</span>(mixed.solve)
-fit &lt;-<span class="st"> </span><span class="kw">mixed.solve</span>(<span class="dt">y =</span> y, <span class="dt">Z =</span> W)</code></pre></div>
-</div>
-<div id="results" class="section level1">
-<h1>Results</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit<span class="op">$</span>beta  <span class="co"># intercept</span>
+fit &lt;-<span class="st"> </span><span class="kw">mixed.solve</span>(<span class="dt">y =</span> y, <span class="dt">K =</span> G)
 
-<span class="kw">head</span>(fit<span class="op">$</span>u)  <span class="co"># marker effects</span>
+fit<span class="op">$</span>beta  <span class="co"># BLUE (intercept)</span>
 
-fit<span class="op">$</span>Vu  <span class="co"># marker genetic variance</span>
+fit<span class="op">$</span>Vu  <span class="co"># additive genetic variance</span>
 
 fit<span class="op">$</span>Ve  <span class="co"># residual variance</span>
 
-fit<span class="op">$</span>Ve<span class="op">/</span>fit<span class="op">$</span>Vu  <span class="co"># lambda</span></code></pre></div>
+lambda &lt;-<span class="st"> </span>fit<span class="op">$</span>Ve<span class="op">/</span>fit<span class="op">$</span>Vu  <span class="co"># lambda</span></code></pre></div>
+</div>
+<div id="weighted-least-squares" class="section level2">
+<h2>Weighted least squares</h2>
+<p>We will estimate the marker effect 1.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Wj &lt;-<span class="st"> </span>W[, <span class="dv">1</span>, drop =<span class="st"> </span><span class="ot">FALSE</span>]  <span class="co"># first marker </span>
+W1j &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">matrix</span>(<span class="dv">1</span>, <span class="dt">nrow =</span> <span class="kw">nrow</span>(Wj)), Wj)  <span class="co"># add the intercept to W</span>
+<span class="kw">colnames</span>(W1j) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Intercept&quot;</span>, <span class="st">&quot;Marker1&quot;</span>)
+
+ed &lt;-<span class="st"> </span><span class="kw">eigen</span>(G)  <span class="co"># eigendecomposition</span>
+ed.val &lt;-<span class="st"> </span>ed<span class="op">$</span>values
+ed.vec &lt;-<span class="st"> </span>ed<span class="op">$</span>vectors
+lambda &lt;-<span class="st"> </span>fit<span class="op">$</span>Ve<span class="op">/</span>fit<span class="op">$</span>Vu
+
+ystar &lt;-<span class="st"> </span><span class="kw">t</span>(ed.vec) <span class="op">%*%</span><span class="st"> </span><span class="kw">matrix</span>(y)
+Wstar &lt;-<span class="st"> </span><span class="kw">t</span>(ed.vec) <span class="op">%*%</span><span class="st"> </span>W1j
+Omega &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span>(ed.val <span class="op">+</span><span class="st"> </span>lambda)  <span class="co"># weight</span>
+
+MWMstar &lt;-<span class="st"> </span><span class="kw">t</span>(Wstar) <span class="op">%*%</span><span class="st"> </span><span class="kw">diag</span>(Omega) <span class="op">%*%</span><span class="st"> </span>Wstar
+MWystar &lt;-<span class="st"> </span><span class="kw">t</span>(Wstar) <span class="op">%*%</span><span class="st"> </span><span class="kw">diag</span>(Omega) <span class="op">%*%</span><span class="st"> </span>ystar</code></pre></div>
+</div>
+</div>
+<div id="results" class="section level1">
+<h1>Results</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">solve</span>(MWMstar) <span class="op">%*%</span><span class="st"> </span>MWystar  <span class="co"># manually computed </span>
+
+fitW &lt;-<span class="st"> </span><span class="kw">lm</span>(ystar <span class="op">~</span><span class="st"> </span><span class="op">-</span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>Wstar, <span class="dt">weights =</span> Omega)  <span class="co"># use the lm() function </span>
+<span class="kw">summary</span>(fitW)<span class="op">$</span>coef</code></pre></div>
+</div>
+<div id="two-step-approach" class="section level1">
+<h1>Two-step approach</h1>
+<p>Compare the results from weighted least squares GWAS with the two-step approach.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Z &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="kw">nrow</span>(G))
+I &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="kw">nrow</span>(G))
+Ginv &lt;-<span class="st"> </span><span class="kw">solve</span>(G)
+V &lt;-<span class="st"> </span>G <span class="op">*</span><span class="st"> </span>fit<span class="op">$</span>Vu <span class="op">+</span><span class="st"> </span>I <span class="op">*</span><span class="st"> </span>fit<span class="op">$</span>Ve
+Vinv &lt;-<span class="st"> </span><span class="kw">solve</span>(V)
+
+a &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(W1j) <span class="op">%*%</span><span class="st"> </span>Vinv <span class="op">%*%</span><span class="st"> </span>W1j) <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(W1j) <span class="op">%*%</span><span class="st"> </span>Vinv <span class="op">%*%</span><span class="st"> </span>y  <span class="co"># # the intercept and the first marker effect</span>
+g &lt;-<span class="st"> </span><span class="kw">solve</span>(I <span class="op">+</span><span class="st"> </span>Ginv <span class="op">*</span><span class="st"> </span>lambda) <span class="op">%*%</span><span class="st"> </span>(y <span class="op">-</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>b)  <span class="co"># BLUP (genetic values)</span>
+
+a  <span class="co"># the intercept and the first marker effect</span>
+<span class="kw">head</span>(g)
+<span class="kw">tail</span>(g)</code></pre></div>
+</div>
+<div id="mixed-model-equations-mme" class="section level1">
+<h1>Mixed model equations (MME)</h1>
+<p>Compare the results from weighted least squares GWAS with the MME.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">WtW &lt;-<span class="st"> </span><span class="kw">t</span>(W1j) <span class="op">%*%</span><span class="st"> </span>W1j  <span class="co"># X'X</span>
+WtZ &lt;-<span class="st"> </span><span class="kw">t</span>(W1j) <span class="op">%*%</span><span class="st"> </span>Z  <span class="co"># X'Z</span>
+ZtW &lt;-<span class="st"> </span><span class="kw">t</span>(Z) <span class="op">%*%</span><span class="st"> </span>W1j  <span class="co"># Z'X</span>
+ZtZ &lt;-<span class="st"> </span><span class="kw">t</span>(Z) <span class="op">%*%</span><span class="st"> </span>Z  <span class="co"># Z'Z</span>
+Wty &lt;-<span class="st"> </span><span class="kw">t</span>(W1j) <span class="op">%*%</span><span class="st"> </span>y  <span class="co"># X'y</span>
+Zty &lt;-<span class="st"> </span><span class="kw">t</span>(Z) <span class="op">%*%</span><span class="st"> </span>y  <span class="co"># Z'y</span>
+
+LHS1 &lt;-<span class="st"> </span><span class="kw">cbind</span>(WtW, WtZ)
+LHS2 &lt;-<span class="st"> </span><span class="kw">cbind</span>(ZtW, ZtZ <span class="op">+</span><span class="st"> </span>Ginv <span class="op">*</span><span class="st"> </span>lambda)
+LHS &lt;-<span class="st"> </span><span class="kw">rbind</span>(LHS1, LHS2)  <span class="co"># left hand side of MME</span>
+RHS &lt;-<span class="st"> </span><span class="kw">rbind</span>(Wty, Zty)  <span class="co"># right hand side of MME</span>
+
+sol &lt;-<span class="st"> </span><span class="kw">solve</span>(LHS, RHS)  <span class="co"># solve for BLUE and BLUP</span>
+
+<span class="co"># intercept</span>
+sol[<span class="dv">1</span>, ]
+
+<span class="co"># effect of marker 1</span>
+sol[<span class="dv">2</span>, ]
+
+<span class="co"># BLUP (genetic values)</span>
+sol[<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)]</code></pre></div>
 </div>
     </section>
   </div>

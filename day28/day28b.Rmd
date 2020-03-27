@@ -1,5 +1,5 @@
 ---
-title: "Ridge regression BLUP"
+title: "Ridge regression BLUP (RRBLUP)"
 author: "Gota Morota"
 date: "March 25, 2020"
 output: 
