@@ -209,21 +209,5 @@ sigma2u / (sigma2u + sigma2e/8)
 ```
 
 
-# lme4 R package
-We can also confirm our results using the [rrBLUP](https://cran.r-project.org/web/packages/rrBLUP/index.html) R package  
-```{r, eval=FALSE, echo=TRUE}
-# install.packages("rrBLUP") 
-library(rrBLUP)
-fit = lmer(yield ~ env + (1 | gen), data=dat)
-fit@beta
-
-rowMeans(ranef(fit)$gen)
-rowMeans(ranef(fit)$gen)[1:7]
-```
-
-The variance components can also be obtained. 
-```{r, eval=FALSE, echo=TRUE}
-data.frame((summary(fit))$varcor)$vcov
-```
 
 
