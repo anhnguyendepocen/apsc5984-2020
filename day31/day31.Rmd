@@ -64,10 +64,8 @@ head(gwasMLM)
 
 ## Manhattan plot
 Open the `GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf` to view the Manhattan plot. 
-```{r, include = TRUE, fig.align = "center", fig.cap = c("Manhattan plot"), echo = FALSE}
-knitr::include_graphics(path = 'GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf')
-```
 
+<img src="GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf" alt="GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf">
 
 
 
