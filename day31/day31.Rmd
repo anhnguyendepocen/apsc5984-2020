@@ -64,7 +64,7 @@ head(gwasMLM)
 
 ## Manhattan plot
 Open the `GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf` to view the Manhattan plot. 
-<img src="GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf" alt="GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf">
+<img src="GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.png" alt="GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf">
 
 
 
