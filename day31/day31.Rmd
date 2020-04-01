@@ -62,13 +62,11 @@ gwasMLM <- read.csv('GAPIT.MLM.EarHT.GWAS.Results.csv', header = TRUE)
 head(gwasMLM)
 ```
 
-#### Manhattan plot
+## Manhattan plot
 Open the `GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf` to view the Manhattan plot. 
-```{r, include = TRUE, fig.align = "center", fig.cap = c("File: GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf"), echo = FALSE}
+```{r, include = TRUE, fig.align = "center", fig.cap = c("Manhattan plot"), echo = FALSE}
 knitr::include_graphics(path = 'GAPIT.MLM.EarHT.Manhattan.Plot.Genomewise.pdf')
 ```
-
-
 
 
 
