@@ -1,0 +1,97 @@
+---
+title: "Cross-validation for genomic prediction"
+author: "Gota Morota"
+date: "April 3, 2020"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## Data 
+We will use the `mice` data available in the [BGLR](https://cran.r-project.org/web/packages/BGLR/index.html) R package. 
+```{r, eval=FALSE}
+library(BGLR)
+data(mice)
+y <- mice.pheno$Obesity.BMI
+W <- mice.X
+dim(W)
+```
+
+## Quality control
+We will perform quality control by removing markers with MAF < 0.1. 
+```{r, eval=FALSE}
+freq <- colSums(W) / (2*nrow(W))
+maf <- ifelse(freq > 0.5, 1-freq, freq)
+maf.index <- which(maf < 0.1)
+length(maf.index)
+W <- W[, -maf.index] 
+dim(W)
+```
+
+## Genomic relationship matrix
+We will create a genomic relationship matrix.  
+```{r, eval=FALSE}
+Wcs <- scale(W, center = TRUE, scale = TRUE)
+G <- tcrossprod(Wcs) / ncol(Wcs)
+```
+
+## RR-BLUP
+We will treat the first 1000 individuals as a training set and predict the additive genetic values of the remaining individuals in the testing set. 
+```{r eval=FALSE, echo=FALSE}
+library(rrBLUP)
+n.trn <- 1000
+n.tst <- length(y) - 1000
+n.tst
+y.trn <- y[1:n.trn]
+length(y.trn)
+y.tst <- y[n.trn+1:n.tst]
+length(y.tst)
+W.trn <- Wcs[1:n.trn, ]
+dim(W.trn)
+W.tst <- Wcs[n.trn+1:n.tst, ]
+dim(W.tst)
+
+fit.trn <- mixed.solve(y = y.trn, Z = W.trn) # estimate marker effects from the training set
+a.trn <- fit.trn$u
+
+y.tst.hat1 <- W.tst %*% a.trn # prediction of the testing set individuals
+```
+
+What is the predictive correlation in the testing set?
+```{r, eval=FALSE}
+cor(y.tst, y.tst.hat1)
+```
+
+
+
+
+## GBLUP
+We will treat the first 1000 individuals as a training set and predict the additive genetic values of the remaining individuals in the testing set. 
+```{r eval=FALSE, echo=FALSE}
+Gtrn <- G[1:n.trn, 1:n.trn]
+dim(Gtrn)
+Gtst.trn <- G[n.trn+1:n.tst, 1:n.trn]
+dim(Gtst.trn)
+Ginv.trn <- solve(Gtrn)
+
+fit.trn2 <- mixed.solve(y = y.trn, K = Gtrn)
+g.trn.hat <- fit.trn2$u  # estimate the genetic values of the training set individuals
+
+y.tst.hat2 <- Gtst.trn %*% Ginv.trn %*% g.trn.hat # prediction of the testing set individuals
+```
+
+
+What is the predictive correlation in the testing set?
+```{r, eval=FALSE}
+# prediction
+cor(y.tst, y.tst.hat2) 
+```
+
+
