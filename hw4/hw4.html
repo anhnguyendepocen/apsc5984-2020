@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Gota Morota" />
+
+
+<title>APSC 5984 Complex Trait Genomics</title>
+
+<script src="hw4_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="hw4_files/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+<script src="hw4_files/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+<script src="hw4_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="hw4_files/navigation-1.1/tabsets.js"></script>
+<script src="hw4_files/navigation-1.1/codefolding.js"></script>
+<link href="hw4_files/magnific-popup-1.1.0/magnific-popup.css" rel="stylesheet" />
+<script src="hw4_files/magnific-popup-1.1.0/jquery.magnific-popup.min.js"></script>
+<link href="hw4_files/readthedown-0.1/readthedown.css" rel="stylesheet" />
+<script src="hw4_files/readthedown-0.1/readthedown.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #ffffff; color: #1f1c1b; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #ffffff; color: #a0a0a0; border-right: 1px solid #a0a0a0; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #1f1c1b; background-color: #ffffff; }
+code > span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code > span.dt { color: #0057ae; } /* DataType */
+code > span.dv { color: #b08000; } /* DecVal */
+code > span.bn { color: #b08000; } /* BaseN */
+code > span.fl { color: #b08000; } /* Float */
+code > span.cn { color: #aa5500; } /* Constant */
+code > span.ch { color: #924c9d; } /* Char */
+code > span.sc { color: #3daee9; } /* SpecialChar */
+code > span.st { color: #bf0303; } /* String */
+code > span.vs { color: #bf0303; } /* VerbatimString */
+code > span.ss { color: #ff5500; } /* SpecialString */
+code > span.im { color: #ff5500; } /* Import */
+code > span.co { color: #898887; } /* Comment */
+code > span.do { color: #607880; } /* Documentation */
+code > span.an { color: #ca60ca; } /* Annotation */
+code > span.cv { color: #0095ff; } /* CommentVar */
+code > span.ot { color: #006e28; } /* Other */
+code > span.fu { color: #644a9b; } /* Function */
+code > span.va { color: #0057ae; } /* Variable */
+code > span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #1f1c1b; } /* Operator */
+code > span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code > span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code > span.pp { color: #006e28; } /* Preprocessor */
+code > span.at { color: #0057ae; } /* Attribute */
+code > span.re { color: #0057ae; } /* RegionMarker */
+code > span.in { color: #b08000; } /* Information */
+code > span.wa { color: #bf0303; } /* Warning */
+code > span.al { color: #bf0303; font-weight: bold; } /* Alert */
+code > span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code > span. { color: #1f1c1b; } /* Normal */
+</style>
+
+
+</head>
+
+<body>
+
+
+<div id="content" data-toggle="wy-nav-shift">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+<nav id="nav-top" role="navigation" aria-label="top navigation">
+    <a role="button" href="#" data-toggle="wy-nav-top"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+</nav>
+
+
+<div id="header">
+<h1 class="title">APSC 5984 Complex Trait Genomics</h1>
+<h1 class="subtitle">Homework assignment 4</h1>
+</div>
+
+
+<div id="table-of-contents">
+    <h2><a href="#content">APSC 5984 Complex Trait Genomics</a></h2>
+    <div id="text-table-of-contents">
+      <ul>
+      <li><a href="#simulated-data">Simulated data</a></li>
+      <li><a href="#question-1">Question 1</a></li>
+      <li><a href="#question-2">Question 2</a></li>
+      </ul>
+    </div>
+</div>
+
+<div id="main">
+<div id="due-date" class="section level3">
+<h3>Due date</h3>
+<p>Monday, April 13, 5pm</p>
+</div>
+<div id="simulated-data" class="section level1">
+<h1>Simulated data</h1>
+<p>Download the simulated data <a href="">HW3.Rda</a> and load it into your R environment.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())
+<span class="kw">load</span>(<span class="st">&quot;HW4.Rda&quot;</span>)
+<span class="kw">ls</span>()</code></pre></div>
+<pre><code>[1] &quot;chr&quot;        &quot;markerName&quot; &quot;pos&quot;        &quot;W&quot;          &quot;y&quot;         </code></pre>
+<ol style="list-style-type: decimal">
+<li><code>chr</code>: chromosomes</li>
+<li><code>markerName</code>: marker names</li>
+<li><code>pos</code>: marker position</li>
+<li><code>W</code>: marker matrix</li>
+<li><code>y</code>: quantitative phenotypes</li>
+</ol>
+</div>
+<div id="question-1" class="section level1">
+<h1>Question 1</h1>
+<p>Read <a href="https://www.nature.com/articles/ng0508-489">Visscher (2008)</a> and summmarize the paper in 200 - 300 words.</p>
+</div>
+<div id="question-2" class="section level1">
+<h1>Question 2</h1>
+<p>Perform single-marker mixed linear model GWAS using the <a href="https://cran.r-project.org/web/packages/rrBLUP/index.html">rrBLUP</a> package. Create a Manhattan plot and find out which markers are significant under the Bonferroni correction.</p>
+</div>
+</div>
+
+
+</div>
+
+<div id="postamble" data-toggle="wy-nav-shift" class="status">
+<p class="author"><span class="glyphicon glyphicon-user"></span> Gota Morota</p>
+<p class="date"><span class="glyphicon glyphicon-calendar"></span> April 6, 2020</p>
+</div>
+
+
+<script>
+$(document).ready(function () {
+ 	  });
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
