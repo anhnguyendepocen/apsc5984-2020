@@ -149,7 +149,9 @@ myGM &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span clas
 <p>In this example, we will perform single marker GWAS analysis using a mixed linear model including the first three principle components (PCs) and the genomic relationship matrix. We will estimate the variance components only once prior to GWAS by setting <code>SNP.3D = TRUE</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># GWAS with MLM </span>
 gwasMLMfit &lt;-<span class="st"> </span><span class="kw">GAPIT</span>(<span class="dt">Y =</span> myY[, <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)], <span class="dt">GD =</span> myGD, <span class="dt">GM =</span> myGM, <span class="dt">model =</span> <span class="st">'MLM'</span>, 
-                    <span class="dt">PCA.total =</span> <span class="dv">3</span>, <span class="dt">SNP.P3D =</span> <span class="ot">TRUE</span>, <span class="dt">SNP.MAF =</span> <span class="fl">0.05</span>)</code></pre></div>
+                    <span class="dt">PCA.total =</span> <span class="dv">3</span>, <span class="dt">SNP.P3D =</span> <span class="ot">TRUE</span>, <span class="dt">SNP.MAF =</span> <span class="fl">0.05</span>)
+<span class="kw">names</span>(gwasMLMfit)</code></pre></div>
+<p>Here, GWAS: gwas results, Pred: genomic prediction results, mc: a vector of snp effects, bc: a vector of fixed effects, mp: a vector of p values of markers, h2: heritability, PCA: first three principle components, GD: marker matrix after removing maf = 0.05, GM: marker location information (after removing maf =0.05), and KI: genomic relationship matrix.</p>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>

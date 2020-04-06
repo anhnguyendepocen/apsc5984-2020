@@ -53,7 +53,9 @@ In this example, we will perform single marker GWAS analysis using a mixed linea
 # GWAS with MLM 
 gwasMLMfit <- GAPIT(Y = myY[, c(1:2)], GD = myGD, GM = myGM, model = 'MLM', 
                     PCA.total = 3, SNP.P3D = TRUE, SNP.MAF = 0.05)
+names(gwasMLMfit)
 ```
+Here, GWAS: gwas results, Pred: genomic prediction results, mc: a vector of snp effects, bc: a vector of fixed effects, mp: a vector of p values of markers, h2: heritability, PCA: first three principle components, GD: marker matrix after removing maf = 0.05, GM: marker location information (after removing maf =0.05), and KI: genomic relationship matrix. 
 
 ## Results
 Use the `read.csv()` function to read the output file `GAPIT.MLM.EarHT.GWAS.Results.csv`.  The columns 4, 9 and 10 are p-value, FDR adjusted p-value, and marker effect, respectively.  

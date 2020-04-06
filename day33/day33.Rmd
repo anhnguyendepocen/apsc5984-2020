@@ -1,0 +1,78 @@
+---
+title: "Single-marker CMLM GWAS using GAPIT"
+author: "Haipeng Yu & Gota Morota" 
+date: "April 6, 2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Overview
+
+This example illustrates how to fit single-marker compressed mixed linear model (CMLM) GWAS using [GAPIT](http://zzlab.net/GAPIT/). The main idea behind CMLM is to reduce computational time by constructing a genomic relationship matrix among clusters instead of individuals. In brief, 
+
+1. Use the `dist()` function to create a distance matrix from a genomic relationship matrix among individuals 
+2. Use the the function `hclust()` to create clusters 
+3. Use the function `cutree()` to assign individuals to each cluster
+4. Construct a reduced genomic relationship matrix by averaging the relationships within clusters and across clusters 
+5. Set up the incidence matrix $\mathbf{Z}$ accordingly 
+
+## Load packages 
+
+```{r, eval = FALSE}
+# clear working environment
+rm(list=ls()) 
+
+# install and load support packages
+source("http://www.zzlab.net/GAPIT/GAPIT.library.R") 
+
+# load GAPIT function
+source("http://www.zzlab.net/GAPIT/gapit_functions.txt")
+```
+
+## Maize data
+The maize data set used here is from a [maize association panel](https://www.panzea.org/) including 281 diverse lines genotyped with 3,093 markers. The three phenotypes include ear height (EarHT), days to pollination (dpoll), and ear diameter (EarDia). In this example, we will only use EarHT. 
+
+```{r, eval = FALSE}
+# phenotypes
+myY <- read.table(file = "http://zzlab.net/GAPIT/data/mdp_traits.txt", header = TRUE)
+
+# marker matrix
+myGD <- read.table(file = "http://zzlab.net/GAPIT/data/mdp_numeric.txt", header = TRUE)
+
+# map information of markers 
+myGM <- read.table(file = "http://zzlab.net/GAPIT/data/mdp_SNP_information.txt", header = TRUE)
+```
+
+## Compressed mixed linear model (CMLM) GWAS
+In the `GAPIT()` function, set `model = CMLM`. 
+```{r, eval = FALSE}
+# GWAS with MLM 
+gwasCMLMfit <- GAPIT(Y = myY[, c(1:2)], GD = myGD, GM = myGM, model = 'CMLM', 
+                     PCA.total = 3, SNP.P3D = TRUE, SNP.MAF = 0.05)
+```
+
+## Results
+Use the `read.csv()` function to read the output file `GAPIT.CMLM.EarHT.GWAS.Results.csv`. The columns 4, 9 and 10 are p-value, FDR adjusted p-value, and marker effect, respectively.
+```{r, eval=FALSE}
+gwasCMLM <- read.csv('GAPIT.CMLM.EarHT.GWAS.Results.csv', header = TRUE)
+head(gwasCMLM)
+```
+
+### Manhattan plot
+Open the `GAPIT.CMLM.EarHT.Manhattan.Plot.Genomewise.pdf` to view the Manhattan plot.
+```{r, include = TRUE, fig.align = "center", fig.cap = c("File: GAPIT.CMLM.EarHT.Manhattan.Plot.Genomewise.pdf"), echo = FALSE}
+# Manhattan plots across genome
+knitr::include_graphics(path = 'GAPIT.CMLM.EarHT.Manhattan.Plot.Genomewise.png')
+```
+
+
+
+
+
+
