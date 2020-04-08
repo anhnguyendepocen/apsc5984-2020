@@ -1,0 +1,90 @@
+@article{yap2018dissection,
+  title={Dissection of genetic variation and evidence for pleiotropy in male pattern baldness},
+  author={Yap, Chloe X and Sidorenko, Julia and Wu, Yang and Kemper, Kathryn E and Yang, Jian and Wray, Naomi R and Robinson, Matthew R and Visscher, Peter M},
+  journal={Nature communications},
+  volume={9},
+  number={1},
+  pages={1--12},
+  year={2018},
+  publisher={Nature Publishing Group}
+}
+
+@techreport{jiang2019resource,
+  title={A resource-efficient tool for mixed model association analysis of large-scale data},
+  author={Jiang, Longda and Zheng, Zhili and Qi, Ting and Kemper, Kathryn E and Wray, Naomi R and Visscher, Peter M and Yang, Jian},
+  year={2019},
+  institution={Nature Publishing Group}
+}
+
+@article{legarra2018semi,
+  title={Semi-parametric estimates of population accuracy and bias of predictions of breeding values and future phenotypes using the LR method},
+  author={Legarra, Andres and Reverter, Antonio},
+  journal={Genetics Selection Evolution},
+  volume={50},
+  number={1},
+  pages={53},
+  year={2018},
+  publisher={Springer}
+}
+
+@article{waldmann2019use,
+  title={On the use of the Pearson correlation coefficient for model evaluation in genome-wide prediction},
+  author={Waldmann, Patrik},
+  journal={Frontiers in Genetics},
+  volume={10},
+  pages={899},
+  year={2019},
+  publisher={Frontiers}
+}
+
+@article{gaynor2017two,
+  title={A two-part strategy for using genomic selection to develop inbred lines},
+  author={Gaynor, R Chris and Gorjanc, Gregor and Bentley, Alison R and Ober, Eric S and Howell, Phil and Jackson, Robert and Mackay, Ian J and Hickey, John M},
+  journal={Crop Science},
+  volume={57},
+  number={5},
+  pages={2372--2386},
+  year={2017},
+  publisher={The Crop Science Society of America, Inc.}
+}
+
+@article{hamazaki2020choosing,
+  title={Choosing the optimal population for a genome-wide association study: a simulation using whole-genome sequences from rice},
+  author={Hamazaki, Kosuke and Kajiya-Kanegae, Hiromi and Yamasaki, Masanori and Ebana, Kaworu and Yabe, Shiori and Nakagawa, Hiroshi and Iwata, Hiroyoshi},
+  journal={The Plant Genome},
+  pages={Early view},
+  year={2020},
+  publisher={Crop Science Society of America}
+}
+
+@article{runcie2019fast,
+  title={Fast and flexible linear mixed models for genome-wide genetics},
+  author={Runcie, Daniel E and Crawford, Lorin},
+  journal={PLoS genetics},
+  volume={15},
+  number={2},
+  pages={e1007978},
+  year={2019},
+  publisher={Public Library of Science}
+}
+
+@article{bolormaa2014multi,
+  title={A multi-trait, meta-analysis for detecting pleiotropic polymorphisms for stature, fatness and reproduction in beef cattle},
+  author={Bolormaa, Sunduimijid and Pryce, Jennie E and Reverter, Antonio and Zhang, Yuandan and Barendse, William and Kemper, Kathryn and Tier, Bruce and Savin, Keith and Hayes, Ben J and Goddard, Michael E},
+  journal={PLoS genetics},
+  volume={10},
+  number={3},
+  year={2014},
+  publisher={Public Library of Science}
+}
+
+@article{zhang2018impact,
+  title={Impact of rare and low-frequency sequence variants on reliability of genomic prediction in dairy cattle},
+  author={Zhang, Qianqian and Sahana, Goutam and Su, Guosheng and Guldbrandtsen, Bernt and Lund, Mogens Sand{\o} and Calus, Mario PL},
+  journal={Genetics Selection Evolution},
+  volume={50},
+  number={1},
+  pages={1--10},
+  year={2018},
+  publisher={BioMed Central}
+}
