@@ -78,6 +78,17 @@
   publisher={Public Library of Science}
 }
 
+@article{aldridge2019efficient,
+  title={Efficient and accurate computation of base generation allele frequencies},
+  author={Aldridge, MN and Vandenplas, J and Calus, MPL},
+  journal={Journal of dairy science},
+  volume={102},
+  number={2},
+  pages={1364--1373},
+  year={2019},
+  publisher={Elsevier}
+}
+
 @article{zhang2018impact,
   title={Impact of rare and low-frequency sequence variants on reliability of genomic prediction in dairy cattle},
   author={Zhang, Qianqian and Sahana, Goutam and Su, Guosheng and Guldbrandtsen, Bernt and Lund, Mogens Sand{\o} and Calus, Mario PL},
