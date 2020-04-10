@@ -1,0 +1,117 @@
+---
+title: "Multiple testing correction in GWAS"
+author: "Gota Morota" 
+date: "April 9, 2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Data
+This example illustrates how to perform multiple testing correction in GWAS using 1) the Bonferroni correction, 2) the Šidák correction, and 3) the Li and Ji correction. 
+
+We will use the subset of the mice data in the BGLR R package.  
+```{r, eval = TRUE}
+library(BGLR)
+data(mice)
+W <- mice.X[1:100, 1:300]
+dim(W)
+```
+
+## Bonferroni correction
+The genome-wide statistical significance threshold using the Bonferroni correction is
+\begin{align*}
+    \alpha_{bonferroni} &= \alpha / m \\
+\end{align*}
+where $\alpha$ is the non-adjusted statistical significance threshold and $m$ is the number of markers. 
+If we set $\alpha = 0.05$, 
+```{r, eval = TRUE}
+0.05 / ncol(W)
+```
+
+## Šidák correction
+The genome-wide statistical significance threshold using the Šidák correction is
+\begin{align*}
+    \alpha_{sid} &= 1 - (1 - \alpha)^{1/m}
+\end{align*}
+If we set $\alpha = 0.05$, 
+```{r, eval = TRUE}
+1 - (1 - 0.05)^(1/ncol(W))
+```
+We can see that the Bonferroni and the Šidák corrections produced the similar result. 
+
+
+## Li and Ji (2005)
+The multiple testing correction of
+[Li and Ji (2005)](https://www.nature.com/articles/6800717) is implemented in the [poolr](https://cran.r-project.org/web/packages/poolr/index.html) R package. Also, visit its  [GitHub](https://github.com/ozancinar/poolR) and [GitHub pages](https://ozancinar.github.io/poolr/). 
+
+```{r, eval = TRUE}
+# install.packages("poolr") # comment out if not installed yet
+library(poolr)
+```
+
+The function `meff()` with `method = "liji"` performs the Li and Ji correction. The input required is the correlation matrix of markers. 
+```{r, eval = TRUE}
+R <- cor(W)
+Meff <- meff(R, method = "liji")
+Meff
+```
+The effective number of markers according to Li and Ji (2005) is $Meff = 48$. Once Meff is obtained, we apply the Šidák correction but replace $m$ with $Meff$. 
+
+\begin{align*}
+    \alpha_{liji} &= 1 - (1 - \alpha)^{1/Meff}
+\end{align*}
+
+```{r, eval = TRUE}
+1 - (1 - 0.05)^(1/Meff)
+```
+We can see that the Li and Ji correction yields the less stringent genome-wide statistical significance threshold compared to those of the Bonferroni and the Šidák. 
+
+
+## Li and Ji (2005) for high-dimensional data
+When the dimension of marker matrix is big, consider calculating the chromosome-specific Meff and then sum them up to obtain the genome-wide Meff. Suppose `geno` contains 400,000 markers of the rice data (12 chromosomes). 
+
+```{r, eval = FALSE}
+# Read the genotypic file and create a correlation matrix for each chromosome
+geno <- readRDS(file = "geno_final.rds")
+r1 <- cor(geno[, 1:50000]) # chr 1
+r2 <- cor(geno[, 50001:90000]) # chr 2
+r3 <- cor(geno[, 90001:130000]) # chr 3
+r4 <- cor(geno[, 130001:160000]) # chr 4 
+r5 <- cor(geno[, 160001:200000]) # chr 5
+r6 <- cor(geno[, 200001:230000]) # chr 6
+r7 <- cor(geno[, 230001:250000]) # chr 7
+r8 <- cor(geno[, 200001:290000]) # chr 8
+r9 <- cor(geno[, 290001:310000]) # chr 9
+r10 <- cor(geno[, 310001:344000]) # chr 10
+r11 <- cor(geno[, 344001:380000]) # chr 11
+r12 <- cor(geno[, 380001:400000]) # chr 12
+
+# Use the meff() function to obtain chromosome specific Meff 
+meff1 <- meff(r1, method = "liji") # chr 1
+meff2 <- meff(r2, method = "liji") # chr 2
+meff3 <- meff(r3, method = "liji") # chr 3
+meff4 <- meff(r4, method = "liji") # chr 4
+meff5 <- meff(r5, method = "liji") # chr 5
+meff6 <- meff(r6, method = "liji") # chr 6
+meff7 <- meff(r7, method = "liji") # chr 7
+meff8 <- meff(r8, method = "liji") # chr 8
+meff9 <- meff(r9, method = "liji") # chr 9
+meff10 <- meff(r10, method = "liji") # chr 10
+meff11 <- meff(r11, method = "liji") # chr 11
+meff12 <- meff(r12, method = "liji") # chr 12
+
+# Sum up all the chromosome specific Meff to obtain the genome-wide Meff
+Meff <- sum(meff1, meff2, meff3, meff4, meff5, meff6, 
+            meff7, meff8, meff9, meff10, meff11, meff12)
+```
+
+
+
+
+
