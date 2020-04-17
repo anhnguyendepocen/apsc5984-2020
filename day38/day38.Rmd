@@ -1,0 +1,129 @@
+---
+title: "Variance components"
+author: "Gota Morota" 
+date: "April 17, 2020"
+output: 
+    prettydoc::html_pretty:
+      theme: architect
+      highlight: vignette
+      toc: true
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+## Rice data
+Download rice data (RiceDiversity.44K.MSU6.Genotypes_PLINK.zip) from [here](http://ricediversity.org/data/sets/44kgwas/). 
+
+## Read genomic data
+```{r, eval=FALSE}
+library(BGLR)
+out<- read_ped("../../../../../teaching/2016/ASCI896/day16/RiceDiversity_44K_Genotypes_PLINK/sativas413.ped")
+p=out$p
+n=out$n
+out=out$x
+#Recode snp to 0,1,2 format using allele 1
+# 0 --> 0
+# 1 --> 1
+# 2 --> NA
+# 3 --> 2
+out[out==2]=NA
+out[out==3]=2
+W=matrix(out,nrow=p,ncol=n,byrow=TRUE)
+W=t(W)
+```
+
+
+## Genotype imputation
+```{r, eval=FALSE}
+for (j in 1:ncol(W)){
+  W[,j] <- ifelse(is.na(W[,j]), mean(W[,j], na.rm=TRUE), W[,j])
+}
+```
+
+## Read .fam file (accession IDs)
+```{r, eval=FALSE}
+fam <-read.table("../../../../../teaching/2016/ASCI896/day16/RiceDiversity_44K_Genotypes_PLINK/sativas413.fam", header = FALSE, stringsAsFactors = FALSE)  
+head(fam)
+rownames(W) <- fam$V2 # 413 x 36901
+```
+
+## Read phenotype file 
+```{r, eval=FALSE}
+# phenotypes
+rice.pheno <- read.table("http://ricediversity.org/data/sets/44kgwas/RiceDiversity_44K_Phenotypes_34traits_PLINK.txt",header=TRUE, stringsAsFactors = FALSE, sep = "\t")
+table(rownames(W) == rice.pheno$NSFTVID)
+y <- rice.pheno$Flowering.time.at.Arkansas # # use the first trait 
+index <- !is.na(y)
+y <- y[index] # 374
+W <- W[index,] # 374x36901
+```
+
+
+## G matrix
+```{r, eval=FALSE}
+p <- colSums(W) / (2*nrow(W))
+maf <- ifelse(p > 0.5, 1-p, p) # or pmin(p, 1-p)
+maf.index <- which(maf < 0.05)
+W2 <- W[, -maf.index]
+dim(W2)
+Wcs <- scale(W2, center = TRUE, scale = TRUE)
+G <- tcrossprod(Wcs) / ncol(Wcs)
+```
+
+## GBLUP
+
+### [rrBLUP](https://cran.r-project.org/web/packages/rrBLUP/index.html) package
+```{r, eval=FALSE}
+library(rrBLUP)
+GBLUP2 <- mixed.solve(y = y, K=G)
+names(GBLUP2)
+
+# intercept 
+GBLUP2$beta
+# additive genomic variance (sigma^2_g)
+GBLUP2$Vu
+# residual variance (sigma^2_e)
+GBLUP2$Ve
+
+# genetic values (breeding values)
+head(GBLUP2$u)
+tail(GBLUP2$u)
+```
+
+
+## RR-BLUP
+
+### [rrBLUP](https://cran.r-project.org/web/packages/rrBLUP/index.html) package
+```{r, eval=FALSE}
+Wc <- scale(W2, center = TRUE, scale = FALSE)
+
+RRBLUP2 <- mixed.solve(y = y, Z=Wc)
+names(RRBLUP2)
+
+# intercept 
+RRBLUP2$beta
+# additive marker variance (sigma^2_a)
+RRBLUP2$Vu
+# residual variance (sigma^2_e)
+RRBLUP2$Ve
+# marker effects 
+head(RRBLUP2$u)
+tail(RRBLUP2$u)
+```
+
+
+
