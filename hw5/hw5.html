@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Gota Morota" />
+
+<meta name="date" content="2020-04-20" />
+
+<title>APSC 5984 Complex Trait Genomics</title>
+
+<script src="hw5_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="hw5_files/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+<script src="hw5_files/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+<script src="hw5_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="hw5_files/navigation-1.1/tabsets.js"></script>
+<script src="hw5_files/navigation-1.1/codefolding.js"></script>
+<link href="hw5_files/magnific-popup-1.1.0/magnific-popup.css" rel="stylesheet" />
+<script src="hw5_files/magnific-popup-1.1.0/jquery.magnific-popup.min.js"></script>
+<link href="hw5_files/readthedown-0.1/readthedown.css" rel="stylesheet" />
+<script src="hw5_files/readthedown-0.1/readthedown.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+<div id="content" data-toggle="wy-nav-shift">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+<nav id="nav-top" role="navigation" aria-label="top navigation">
+    <a role="button" href="#" data-toggle="wy-nav-top"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
+</nav>
+
+
+<div id="header">
+<h1 class="title">APSC 5984 Complex Trait Genomics</h1>
+<h1 class="subtitle">Homework assignment 5</h1>
+</div>
+
+
+<div id="table-of-contents">
+    <h2><a href="#content">APSC 5984 Complex Trait Genomics</a></h2>
+    <div id="text-table-of-contents">
+      <ul>
+      <li><a href="#data">Data</a></li>
+      <li><a href="#question-1">Question 1</a></li>
+      <li><a href="#question-2">Question 2</a></li>
+      <li><a href="#question-3">Question 3</a></li>
+      <li><a href="#question-4">Question 4</a></li>
+      <li><a href="#question-5">Question 5</a></li>
+      <li><a href="#question-6">Question 6</a></li>
+      <li><a href="#question-7">Question 7</a></li>
+      <li><a href="#question-8">Question 8</a></li>
+      <li><a href="#question-9">Question 9</a></li>
+      <li><a href="#question-10">Question 10</a></li>
+      </ul>
+    </div>
+</div>
+
+<div id="main">
+<div id="due-date" class="section level3">
+<h3>Due date</h3>
+<p>Thursday, April 27, 5pm</p>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>Resende Jr. et al. (2012) (<a href="http://dx.doi.org/10.1534/genetics.111.137026">DOI: 10.1534/genetics.111.137026</a>) analyzed 17 traits in loblolly pine (Pinus taeda) data, which include 951 individuals genotyped with 4853 SNPs. In this homework assignment, we will use the derregressed breeding values of crown width across the planting beds at age 6 (CWAC6). Download the <a href="http://www.genetics.org/highwire/filestream/412827/field_highwire_adjunct_files/7/Loblolly_Pine_Resende_.zip">zip</a> file and type the following code.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># read phenotype and SNP files</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">CWAC6 &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;Loblolly_Pine_Resende/Phenotypic_Data Folder/DATA_nassau_age6_CWAC.csv&quot;</span>, </a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">SNP &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;Loblolly_Pine_Resende/Snp_Data.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co"># remove missing phenotypes</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">na.index &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">is.na</span>(CWAC6<span class="op">$</span>Derregressed_BV))</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">CWAC6 &lt;-<span class="st"> </span>CWAC6[<span class="op">-</span>na.index, ]</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">SNP &lt;-<span class="st"> </span>SNP[<span class="op">-</span>na.index, ]</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="kw">table</span>(CWAC6<span class="op">$</span>Genotype <span class="op">==</span><span class="st"> </span>SNP[, <span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co"># phenotypes</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">y &lt;-<span class="st"> </span>CWAC6<span class="op">$</span>Derregressed_BV</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">y &lt;-<span class="st"> </span><span class="kw">matrix</span>(y, <span class="dt">ncol =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co"># markers</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">SNP &lt;-<span class="st"> </span>SNP[, <span class="dv">-1</span>]  <span class="co"># 861 x 4853</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">SNP[SNP <span class="op">==</span><span class="st"> </span><span class="dv">-9</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a></code></pre></div>
+</div>
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>Replace missing marker genotypes with mean values. Then store the marker genotypes in a matrix object <code>W</code>.</p>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>Perform a quality control by removing markers with MAF &lt; 0.05. How many markers are removed? Save the filtered genotype matrix in <code>W2</code>.</p>
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>Scale the genotype matrix (<code>W2</code>) to have a mean of zero and variance of one. Save this matrix as <code>Ws</code>.</p>
+</div>
+<div id="question-4" class="section level2">
+<h2>Question 4</h2>
+<p>Compute the second genomic relationship matrix of VanRaden (2008) <code>G</code> using the entire markers. Then add a very small positive constant (e.g., 0.001) to the diagonal elements so that <code>G</code> matrix is invertible.</p>
+</div>
+<div id="question-5" class="section level2">
+<h2>Question 5</h2>
+<p>Fit GBLUP by using the <code>mixed.solve</code> function in the <a href="https://cran.r-project.org/web/packages/rrBLUP/index.html">rrBLUP</a> R package. Report the estimates of intercept, additive genetic values, and genomic heritability.</p>
+</div>
+<div id="question-6" class="section level2">
+<h2>Question 6</h2>
+<p>Repeat Question 5 by setting up mixed model equations (MME) with the model <span class="math inline">\(\mathbf{y = \mathbf{1}\mu + Zg + e}\)</span>, where <span class="math inline">\(\mu\)</span> is the intercept, <span class="math inline">\(\mathbf{Z}\)</span> is the incident matrix of individuals, <span class="math inline">\(\mathbf{g}\)</span> is the additive genetic values, and <span class="math inline">\(\mathbf{e}\)</span> is the residual. Use the ratio of variance components <span class="math inline">\(\lambda = \frac{\sigma^2_e}{\sigma^2_g}\)</span> obtained from Question 5. Directly take the inverse of LHS to obtain the solutions for GBLUP. Report the estimates of intercept and additive genetic values. Do they agree with the estimates in Question 5?</p>
+</div>
+<div id="question-7" class="section level2">
+<h2>Question 7</h2>
+<p>Fit RR-BLUP by using the <code>mixed.solve</code> function in the <a href="https://cran.r-project.org/web/packages/rrBLUP/index.html">rrBLUP</a> R package. Report the estimates of intercept, marker additive genetic effects, and marker additive genetic variance.</p>
+</div>
+<div id="question-8" class="section level2">
+<h2>Question 8</h2>
+<p>Repeat Question 7 by setting up mixed model equations (MME) with the model <span class="math inline">\(\mathbf{y = \mathbf{1}\mu + Wa + e}\)</span>, where <span class="math inline">\(\mu\)</span> is the intercept, <span class="math inline">\(\mathbf{W}\)</span> is the standardized marker genotypes (<code>Ws</code>), <span class="math inline">\(\mathbf{a}\)</span> is the additive marker genetic effects, and <span class="math inline">\(\mathbf{e}\)</span> is the residual. Use the ratio of variance components <span class="math inline">\(\lambda = \frac{\sigma^2_e}{\sigma^2_a}\)</span> obtained from Question 7. Directly take the inverse of LHS to obtain the solutions for marker-based GBLUP (RR-BLUP). Report the estimates of intercept and marker additive genetic effects. Do they agree with the estimates in Question 7?</p>
+</div>
+<div id="question-9" class="section level2">
+<h2>Question 9</h2>
+<p>Repeat Questions 5 and 6 (GBLUP) but perform cross-validation by treating the first 600 individuals as a training set and predict the additive genetic values of the remaining individuals in the testing set. What is the predictive correlation in the testing set? Use the ratio of variance components <span class="math inline">\(\lambda = \frac{\sigma^2_e}{\sigma^2_g}\)</span> obtained from Question 5.</p>
+</div>
+<div id="question-10" class="section level2">
+<h2>Question 10</h2>
+<p>Repeat Questions 7 and 8 (RR-BLUP) but perform cross-validation by treating the first 600 individuals as a training set and predict the additive genetic values of the remaining individuals in the testing set. What is the predictive correlation in the testing set? Use the ratio of variance components <span class="math inline">\(\lambda = \frac{\sigma^2_e}{\sigma^2_a}\)</span> obtained from Question 7. Also, compare this predictive correlation to the one from Question 9. If computed correctly, these two values should be exactly the same or very similar. Briefly explain why this is the case.</p>
+</div>
+</div>
+
+
+</div>
+
+<div id="postamble" data-toggle="wy-nav-shift" class="status">
+<p class="author"><span class="glyphicon glyphicon-user"></span> Gota Morota</p>
+<p class="date"><span class="glyphicon glyphicon-calendar"></span> April 20, 2020</p>
+</div>
+
+
+<script>
+$(document).ready(function () {
+ 	  });
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

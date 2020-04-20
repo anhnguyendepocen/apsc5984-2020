@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Data 
 We will use the `mice` data available in the [BGLR](https://cran.r-project.org/web/packages/BGLR/index.html) R package. 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=TRUE}
 library(BGLR)
 data(mice)
 y <- mice.pheno$Obesity.BMI
@@ -26,7 +26,7 @@ dim(W)
 
 ## Quality control
 We will perform quality control by removing markers with MAF < 0.1. 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=TRUE}
 freq <- colSums(W) / (2*nrow(W))
 maf <- ifelse(freq > 0.5, 1-freq, freq)
 maf.index <- which(maf < 0.1)
@@ -37,14 +37,14 @@ dim(W)
 
 ## Genomic relationship matrix
 We will create a genomic relationship matrix.  
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=TRUE}
 Wcs <- scale(W, center = TRUE, scale = TRUE)
 G <- tcrossprod(Wcs) / ncol(Wcs)
 ```
 
 ## RR-BLUP
 We will treat the first 1000 individuals as a training set and predict the additive genetic values of the remaining individuals in the testing set. 
-```{r eval=FALSE, echo=FALSE}
+```{r eval=FALSE, echo=TRUE}
 library(rrBLUP)
 n.trn <- 1000
 n.tst <- length(y) - 1000
@@ -65,7 +65,7 @@ y.tst.hat1 <- W.tst %*% a.trn # prediction of the testing set individuals
 ```
 
 What is the predictive correlation in the testing set?
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=TRUE}
 cor(y.tst, y.tst.hat1)
 ```
 
@@ -74,7 +74,7 @@ cor(y.tst, y.tst.hat1)
 
 ## GBLUP
 We will treat the first 1000 individuals as a training set and predict the additive genetic values of the remaining individuals in the testing set. 
-```{r eval=FALSE, echo=FALSE}
+```{r eval=FALSE, echo=TRUE}
 Gtrn <- G[1:n.trn, 1:n.trn]
 dim(Gtrn)
 Gtst.trn <- G[n.trn+1:n.tst, 1:n.trn]
@@ -89,7 +89,7 @@ y.tst.hat2 <- Gtst.trn %*% Ginv.trn %*% g.trn.hat # prediction of the testing se
 
 
 What is the predictive correlation in the testing set?
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=TRUE}
 # prediction
 cor(y.tst, y.tst.hat2) 
 ```
