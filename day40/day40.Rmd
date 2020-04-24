@@ -1,0 +1,105 @@
+---
+title: "Bayesian alphabet"
+author: "Gota Morota" 
+date: "April 24, 2020"
+output: 
+  BiocStyle::html_document
+---
+
+# Bayesian penalized regression 
+We will use the BGLR R package to fit Bayesian alphabet regression. 
+
+## Rice data
+We will use the the same rice data from [last week](http://morotalab.org/apsc5984-2020/day38/day38.html). 
+
+## Data cleaning 
+```{r, eval=FALSE}
+library(BGLR)
+out<- read_ped("../../../../../teaching/2016/ASCI896/day16/RiceDiversity_44K_Genotypes_PLINK/sativas413.ped")
+p=out$p
+n=out$n
+out=out$x
+#Recode snp to 0,1,2 format using allele 1
+# 0 --> 0
+# 1 --> 1
+# 2 --> NA
+# 3 --> 2
+out[out==2]=NA
+out[out==3]=2
+W=matrix(out,nrow=p,ncol=n,byrow=TRUE)
+W=t(W)
+```
+
+## Genotype imputation
+```{r, eval=FALSE}
+for (j in 1:ncol(W)){
+  W[,j] <- ifelse(is.na(W[,j]), mean(W[,j], na.rm=TRUE), W[,j])
+}
+```
+
+
+
+## Quality control
+```{r, eval=FALSE}
+# accession ID
+fam <-read.table("../../../../../teaching/2016/ASCI896/day16/RiceDiversity_44K_Genotypes_PLINK/sativas413.fam", header = FALSE, stringsAsFactors = FALSE)  
+head(fam)
+rownames(W) <- fam$V2 # 413 x 36901
+
+# MAF=0.05
+p <- colSums(W) / (2*nrow(W))
+maf <- ifelse(p > 0.5, 1-p, p)
+maf.index <- which(maf < 0.05)
+W <- W[, -maf.index]  # 413 x 33701
+```
+
+
+## Phenotypes
+```{r, eval=FALSE}
+# phenotypes
+rice.pheno <- read.table("http://ricediversity.org/data/sets/44kgwas/RiceDiversity_44K_Phenotypes_34traits_PLINK.txt",header=TRUE, stringsAsFactors = FALSE, sep = "\t")
+table(rownames(W) == rice.pheno$NSFTVID)
+y <- rice.pheno$Flowering.time.at.Arkansas # # use the first trait 
+index <- !is.na(y)
+y <- y[index] # 374
+W <- W[index,] # 374 33701
+```
+
+
+
+## BayesA 
+We will first create a list named ETA that includes a marker matrix and a type of model we want to fit. If you set `model = BayesA`, the `BGLR` function will run Bayesian ridge regression. In the `BGLR` function, set how many MCMC and burn-in samples you would like to take by setting the `nIter` and `burnIn` arguments. 
+```{r, eval=FALSE}
+# rule-based priors
+?BGLR
+ETA <- list(MRK=list(X = W, model = "BayesA"))
+fit.BayesA <- BGLR(y = y, ETA = ETA, nIter = 500, burnIn = 250, verbose = TRUE)
+
+head(fit.BayesA$ETA[[1]]$b) # estimated marker effects 
+```
+
+
+## BayesB
+To fit BayesB, set `model = BayesB`. In the `BGLR` function, set how many MCMC and burn-in samples you would like to take by setting the `nIter` and `burnIn` arguments. 
+```{r, eval=FALSE}
+# rule-based priors 
+?BGLR
+ETA <- list(MRK=list(X = W, model="BayesB"))
+fit.BayesB <- BGLR(y = y, ETA = ETA, nIter = 500, burnIn = 250, verbose = TRUE)
+
+head(fit.BayesB$ETA[[1]]$b) # estimated marker effects 
+```
+
+
+## BayesC
+To fit BayesB, set `model = BayesC`. In the `BGLR` function, set how many MCMC and burn-in samples you would like to take by setting the `nIter` and `burnIn` arguments. 
+```{r, eval=FALSE}
+# rule-based priors 
+?BGLR
+ETA <- list(MRK=list(X = W, model="BayesC"))
+fit.BayesC <- BGLR(y = y, ETA = ETA, nIter = 500, burnIn = 250, verbose = TRUE)
+
+head(fit.BayesC$ETA[[1]]$b) # estimated marker effects 
+```
+
+
