@@ -1,0 +1,367 @@
+---
+title: "Estimating genomic heritability from Bayesian marker-based regression models"
+author: "Gota Morota"
+date: "April 27, 2020"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+This excersie shows how to estimate genomic heritability from Bayesian merker-based regression. Recall that genomic heritability is given by $h^2_g = \frac{\sigma^2_g}{\sigma^2_g + \sigma^2_e}$, where $\sigma^2_g$ is the estimate of genomic variance and $\sigma^2_e$ is the estimate of residual variance. 
+
+# Data 
+We will use the `mice` data available in the [BGLR](https://cran.r-project.org/web/packages/BGLR/index.html) R package. 
+```{r, eval=FALSE, echo=TRUE}
+library(BGLR)
+data(mice)
+y <- mice.pheno$Obesity.BMI
+W <- mice.X
+dim(W)
+```
+
+## Quality control
+We will perform quality control by removing markers with MAF < 0.1. 
+```{r, eval=FALSE, echo=TRUE}
+freq <- colSums(W) / (2*nrow(W))
+maf <- ifelse(freq > 0.5, 1-freq, freq)
+maf.index <- which(maf < 0.1)
+length(maf.index)
+W <- W[, -maf.index]
+freq <- freq[-maf.index]
+dim(W) # 1814 9340
+``` 
+
+## Standarization of marker matrix
+We will create type marker matrices. `Wc`: a centered marker matrix. `Wcs`: a centered and scaled marker matrix.
+```{r, eval=FALSE, echo=TRUE}
+Wc <- scale(W, center = TRUE, scale = FALSE)
+
+Wcs <- scale(W, center = TRUE, scale = TRUE)
+```
+
+
+## Genomic relationship matrix
+We will create two types of VanRaden's [genomic relationship matrices](https://doi.org/10.3168/jds.2007-0980): `G1`: VanRaden's first genomic relationship matrix. `G2`: VanRaden's second genomic relationship matrix. 
+```{r, eval=FALSE, echo=TRUE}
+G1 <- tcrossprod(Wc) / sum(2*freq*(1-freq))
+
+G2 <- tcrossprod(Wcs) / ncol(Wcs)
+```
+
+# GBLUP 
+Genomic best linear unbiased prediction (GBLUP) is given by 
+\begin{align*}
+    \mathbf{y} &= \mathbf{Xb} + \mathbf{Zg} + \mathbf{e} \\
+    \mathbf{g} &\sim N(0, \mathbf{G}\sigma^2_g) \\
+    \mathbf{e} &\sim N(0, \mathbf{I}\sigma^2_e) 
+\end{align*}
+where $\mathbf{X}$ and $\mathbf{Z}$ are the incidence matrices for fixed and random effects, respectively, and  $\mathbf{b}$ and $\mathbf{g}$ are BLUE of fixed effect and BLUP of genetic values, respectively. Also, $\sigma^2_g$ is the additive genetic variance and $\sigma^2_e$ is the residual variance. By using the restricted maximum likelihood ([REML](https://en.wikipedia.org/wiki/Restricted_maximum_likelihood)), we can obtain the estimate of genomic heritability as
+
+\begin{align*}
+h^2_g = \frac{\sigma^2_g}{\sigma^2_g + \sigma^2_e}
+\end{align*}
+
+## GBLUP with G1
+Use `mixed.solve` function in the [rrBLUP](https://cran.r-project.org/web/packages/rrBLUP/index.html) R package. We will first estimate genomic heritability using GBLUP coupled with the `G1` matrix. 
+```{r eval=FALSE, echo=TRUE}
+library(rrBLUP)
+fitG1 <- mixed.solve(y = y, K=G1)
+# additive genetic variance
+fitG1$Vu
+# residual variance
+fitG1$Ve
+# genomic h2
+fitG1$Vu / (fitG1$Vu + fitG1$Ve) # 0.195
+```
+The estimate of heritability from the G1-based GBLUP is 0.195. 
+
+
+## GBLUP with G2
+We will estimate genomic heritability using GBLUP again, but this time with the `G2` matrix. 
+```{r eval=FALSE, echo=TRUE}
+fitG2 <- mixed.solve(y = y, K=G2)
+# additive genetic variance
+fitG2$Vu
+# residual variance
+fitG2$Ve
+# genomic h2
+fitG2$Vu / (fitG2$Vu + fitG2$Ve) # 0.203
+```
+The estimate of heritability from the G2-based GBLUP is 0.203, which is slightly different from the one from the G1. 
+
+
+# RR-BLUP
+In ridge regression BLUP (RR-BLUP), we treat the markers as random and fit the whole markers simultaneously. Note that in RR-BLUP, we regress phenotype on the marker matrix instead of regressing on the $G$ matrix as in GBLUP. 
+
+\begin{align*}
+\mathbf{y} &= \mathbf{Xb} + \mathbf{Wa} + \mathbf{e} \\
+\mathbf{a} & \sim N(0, \mathbf{I}\sigma^2_a) \\
+\mathbf{e} & \sim N(0, \mathbf{I}\sigma^2_e)
+\end{align*}
+
+- $\mathbf{X}$: incidence matrix of fixed effect
+- $\mathbf{b}$: vector of fixed effect
+- $\mathbf{W}$: marker matrix
+- $\mathbf{a}$: vector of marker effect 
+- $\sigma^2_a$: marker genetic variance
+- $\mathbf{e}$: vector of residual
+- $\sigma^2_a$: residual variance
+
+The marker genetic variance $\sigma^2_a$ is not genetic variance $\sigma^2_g$, which is required to calculate genomic heritability. Therefore, we have to indirectly estimate $\sigma^2_g$ to obtain the estimate of genomic heritability. 
+
+## RR-BLUP with Wc
+In RR-BLUP, we estimate genomic heritability by regressing phenotype on markre covariates. We first estimate marker genetic variance $\sigma^2_a$ in RR-BLUP. Then we estimate genetic variance $\sigma^2_g$ from  $\sigma^2_a$  by using the formula $\sigma^2_g = \sum^m_{j=1}(2p_j(1-p_j)) \sigma^2_a$, where $p_j$ is the $j$th allele frequency of reference allele. This formula holds when the marker matrix is centered (`Wc`). 
+```{r eval=FALSE, echo=TRUE}
+library(rrBLUP)
+fitWc <- mixed.solve(y = y, Z=Wc)
+# marker additive genetic variance
+fitWc$Vu
+# residual variance
+fitWc$Ve
+# marker additive genetic effects
+head(fitWc$u)
+# additive genetic variance
+sigma2gWc <- sum(2*freq*(1-freq)) * fitWc$Vu 
+# genomic h2
+sigma2gWc / (sigma2gWc + fitWc$Ve) # 0.195
+```
+We can confirm that the estimate of genomic heritability is equivalent to the one from G1-based GBLUP.
+
+
+
+## RR-BLUP with Wcs
+Similar to the above, we first estimate marker genetic variance $\sigma^2_a$ in RR-BLUP. Then we estimate genetic variance $\sigma^2_g$ from  $\sigma^2_a$  by using the formula $\sigma^2_g = m \sigma^2_a$, where $m$ is the number of markers. This formula holds when the marker matrix centered and scaled (`Wcs`). 
+```{r eval=FALSE, echo=TRUE}
+library(rrBLUP)
+fitWcs <- mixed.solve(y = y, Z=Wcs)
+# marker additive genetic variance
+fitWcs$Vu
+# residual variance
+fitWcs$Ve
+# marker additive genetic effects
+head(fitWcs$u)
+# additive genetic variance
+sigma2gWcs <- ncol(Wcs) * fitWcs$Vu 
+# genomic h2
+sigma2gWcs / (sigma2gWcs + fitWcs$Ve) # 0.203
+```
+We can confirm that the estimate of genomic heritability is equivalent to the one from G2-based GBLUP.
+
+
+# Bayesian ridge regression
+Bayesian ridge regression is equivalent to assigning a Gaussian prior to the marker effect. 
+\begin{align*}
+    \mathbf{y} = \sum^m_{j=1} \mathbf{W}_{j} a_j + \epsilon
+    \rightarrow \mathbf{y}| a_j, \sigma^2_e \sim N(\mathbf{W}_{j} a_j, \sigma^2_e)
+\end{align*}
+  
+$p(\mathbf{a}| \mathbf{y}, \sigma^2_e, \sigma^2_{a}) \propto p(\mathbf{y}|\mathbf{a}, \sigma^2_e) \cdot p(\mathbf{a}| \sigma^2_{a})$
+
+\begin{align*}
+        \text{Prior distributions}
+    \begin{cases}
+          a_j|\sigma^2_{a} \sim N(0,  \sigma_{a}^{2} ) \\
+          \sigma^2_{a} \sim \chi^{-2}(\nu, S)  \\
+          \sigma^2_{e} \sim \chi^{-2}(\nu, S)
+    \end{cases}
+\end{align*}
+
+- $\chi^{-2}(\nu, S) \rightarrow$ scaled inverted chi-square distribution with $\nu$ degrees of freedom  and scale parameter $S$ 
+
+## Bayesian ridge regression with Wc
+We can estimate genomic heritability from Bayesian ridge regression with Wc as the same way as in RR-BLUP with Wc using the following relationship between $\sigma^2_g$ and $\sigma^2_a$. 
+
+\[
+\sigma^2_g = \sum^m_{j=1}(2p_j(1-p_j)) \sigma^2_a
+\]
+
+```{r eval=FALSE, echo=TRUE}
+ETA <- list(MRK=list(X = Wc, model = "BRR"))
+fitBRRWc <- BGLR(y = y, ETA = ETA, nIter = 3000, burnIn = 500, verbose = TRUE)
+
+# marker genetic variance
+fitBRRWc$ETA[[1]]$varB
+# residual variance
+fitBRRWc$varE
+# marker additive genetic effects
+fitBRRWc$ETA[[1]]$b
+# additive genetic variance
+sigma2gBRRWc <- sum(2*freq*(1-freq)) * fitBRRWc$ETA[[1]]$varB
+# genomic h2
+sigma2gWc / (sigma2gWc + fitBRRWc$varE) # 0.198
+```
+We can see that the estimate of genomic heritability from Bayesian ridge regression with Wc is very simlar to the one from RR-BLUP with Wc. 
+
+
+## Bayesian ridge regression with Wcs
+We can estimate genomic heritability from Bayesian ridge regression with Wcs as the same way as in RR-BLUP with Wcs by using the following relationship between $\sigma^2_g$ and $\sigma^2_a$. 
+
+\[
+\sigma^2_g = m \sigma^2_a
+\]
+
+```{r eval=FALSE, echo=TRUE}
+set.seed(100)
+ETA <- list(MRK=list(X = Wcs, model = "BRR"))
+fitBRRWcs <- BGLR(y = y, ETA = ETA, nIter = 3000, burnIn = 500, verbose = TRUE)
+
+# marker genetic variance
+fitBRRWcs$ETA[[1]]$varB
+# residual variance
+fitBRRWcs$varE
+# marker additive genetic effects
+head(fitBRRWcs$ETA[[1]]$b)
+# additive genetic variance
+sigma2gBRRWcs <- ncol(Wcs) * fitBRRWcs$ETA[[1]]$varB
+# genomic h2
+sigma2gWcs / (sigma2gWcs + fitBRRWcs$varE) # 0.205
+```
+We can see that the estimate of genomic heritability from Bayesian ridge regression with Wcs is very simlar to the one from RR-BLUP with Wcs. 
+
+
+# BayesC
+BayesC is equivalent to assuming two component mixture prior with a point of mass at zero and a Gaussian slab. It does both shrinkage and variable selection.
+  \begin{align*}
+    \mathbf{y} = \sum^m_{j=1} \mathbf{W}_{j} a_j + \epsilon
+    \rightarrow \mathbf{y}| a_j, \sigma^2_e \sim N(\mathbf{W}_{j} a_j, \sigma^2_e)
+\end{align*}
+
+$p(\mathbf{a}| \mathbf{y}, \sigma^2_e, \sigma^2_{a}) \propto p(\mathbf{y}|\mathbf{a}, \sigma^2_e) \cdot p(\mathbf{a}| \sigma^2_{a})$
+
+\begin{align*}
+        \text{Prior distributions}
+        \begin{cases}
+           \begin{cases}
+                       a_j = 0  \quad \text{with probability} \quad  \pi  \\
+                       a_j|\sigma^2_{a} \sim N(0,  \sigma_{a}^{2} )  \quad \text{with probability} \quad (1 - \pi)
+           \end{cases} \\
+           \sigma^2_{a} \sim  \chi^{-2}(\nu, S)  \\
+          \sigma^2_{e} \sim \chi^{-2}(\nu, S)
+    \end{cases}
+\end{align*}
+
+- $\pi$: probability that markers have no effect
+
+- $\chi^{-2}(\nu, S) \rightarrow$ scaled inverted chi-square distribution with $\nu$ degrees of freedom  and scale parameter $S$ 
+
+Unlike Bayesian ridge regression, the relationship between $\sigma^2_g$ and $\sigma^2_a$ is not clear in BayesC. Theoretically, it is possible to derive a sample of the genetic variance from the sample variance of the genetic values at each iteration of the Gibbs sampler as shown in this [paper](https://doi.org/10.1534/genetics.117.300271). For $s$th Gibbs sample, we calculate 
+
+\begin{align*}
+\sigma^{2(s)}_g = \frac{\sum_{i=1}^{n} (g^{(s)}_i - \bar{g}^{(s)})^2}{n}
+\end{align*}
+where $\bar{g}^{(s)} = \frac{\sum^n_{i=1} g_i^{(s)}}{n}$ is the average genetic value and $n$ is the number of individuals. Then, compute genomic heritability at $s$th iteration as 
+\begin{align*}
+h^{2(s)}_g = \frac{\sigma^{2(s)}_g}{\sigma^{2(s)}_g+ \sigma^{2(s)}_e}
+\end{align*}
+
+Once Gibbs sampling is over, compute the posterior mean of the genomic heritability.
+
+## BayesC with Wcs
+The following code estimates the genomic heritability from BayesC with Wcs.
+```{r eval=FALSE, echo=TRUE}
+set.seed(100)
+ETA <- list(MRK=list(X = Wcs, model = "BayesC", saveEffects=TRUE))
+fitBayesCWcs <- BGLR(y = y, ETA = ETA, nIter = 6000, burnIn = 1000, verbose = TRUE)
+
+# marker genetic variance
+fitBayesCWcs$ETA[[1]]$varB
+# residual variance
+fitBayesCWcs$varE
+# marker additive genetic effects
+head(fitBayesCWcs$ETA[[1]]$b)
+
+# read output files
+B=readBinMat('ETA_MRK_b.bin')
+dim(B)
+E <- scan("varE.dat")
+E <- E[-c(1:fitBayesCWcs$burnIn / fitBayesCWcs$thin)]
+length(E)
+
+# compute genomic heritability at each iteration of the Gibbs sampler 
+h2vec <- array()
+for (s in 1:nrow(B)){
+  
+  ghat <- Wcs %*% B[s,]
+  gbar <- mean(Wcs %*% B[s,])
+  sigma2g <- sum( (ghat - gbar)^2 ) / (nrow(Wcs) )
+  h2vec[s] <- sigma2g / E[s]
+
+  }
+
+# posterior mean of h2
+mean(h2vec) # 0.272
+```
+The estimate of genomic heritability from BayesC is larger than those of GBLUP, RR-BLUP, and Bayesian ridge regression. 
+
+# BayesB
+BayesB is equivalent to assuming two component mixture prior with a point of mass at zero and a sclaed-t distribution slab. It does both shrinkage and variable selection.
+ \begin{align*}
+    \mathbf{y} = \sum^m_{j=1} \mathbf{W}_{j} a_j + \epsilon
+    \rightarrow \mathbf{y}| a_j, \sigma^2_e \sim N(\mathbf{W}_{j} a_j, \sigma^2_e)
+\end{align*}
+
+$p(\mathbf{a}| \mathbf{y}, \sigma^2_e, \sigma^2_{a}) \propto p(\mathbf{y}|\mathbf{a}, \sigma^2_e) \cdot p(\mathbf{a}| \sigma^2_{a})$
+
+\begin{align*}
+        \text{Prior distributions}
+        \begin{cases}
+           \begin{cases}
+                       a_j =  0  \quad \text{with probability} \quad  \pi  \\
+                       a_j|\sigma^2_{a_j} \sim N(0,  \sigma_{a_j}^{2} )  \quad \text{with probability} \quad (1 - \pi)
+           \end{cases} \\
+           \sigma^2_{a_j} \sim  \chi^{-2}(\nu, S)  \\
+          \sigma^2_{e} \sim \chi^{-2}(\nu, S)
+    \end{cases}
+\end{align*}
+
+- $\pi$: probability that markers have no effect
+
+- $\chi^{-2}(\nu, S) \rightarrow$ scaled inverted chi-square distribution with $\nu$ degrees of freedom  and scale parameter $S$ 
+
+Similar to BayesC, we calculate the genetic variance from the sample variance of the genetic values at each iteration of the Gibbs sampler.
+
+## BayesB with Wcs
+The following code estimates the genomic heritability from BayesB with Wcs.
+```{r eval=FALSE, echo=TRUE}
+set.seed(100)
+ETA <- list(MRK=list(X = Wcs, model = "BayesB", saveEffects=TRUE))
+fitBayesBWcs <- BGLR(y = y, ETA = ETA, nIter = 6000, burnIn = 1000, verbose = TRUE)
+
+# marker genetic variance
+fitBayesBWcs$ETA[[1]]$varB
+# residual variance
+fitBayesBWcs$varE
+# marker additive genetic effects
+head(fitBayesBWcs$ETA[[1]]$b)
+
+# read output files
+B=readBinMat('ETA_MRK_b.bin')
+dim(B)
+E <- scan("varE.dat")
+E <- E[-c(1:fitBayesBWcs$burnIn / fitBayesBWcs$thin)]
+length(E)
+
+# compute genomic heritability at each iteration of the Gibbs sampler 
+h2vec <- array()
+for (s in 1:nrow(B)){
+  
+  ghat <- Wcs %*% B[s,]
+  gbar <- mean(Wcs %*% B[s,])
+  sigma2g <- sum( (ghat - gbar)^2 ) / (nrow(Wcs) )
+  h2vec[s] <- sigma2g / E[s]
+
+}
+
+# posterior mean of h2
+mean(h2vec) # 0.303
+```
+The estimate of genomic heritability from BayesB is overestimated compared to those of GBLUP, RR-BLUP, and Bayesian ridge regression. 
+
+
+
