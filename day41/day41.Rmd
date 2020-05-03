@@ -175,7 +175,7 @@ $p(\mathbf{a}| \mathbf{y}, \sigma^2_e, \sigma^2_{a}) \propto p(\mathbf{y}|\mathb
 - $\chi^{-2}(\nu, S) \rightarrow$ scaled inverted chi-square distribution with $\nu$ degrees of freedom  and scale parameter $S$ 
 
 ## Bayesian ridge regression with Wc
-We can estimate genomic heritability from Bayesian ridge regression with Wc as the same way as in RR-BLUP with Wc using the following relationship between $\sigma^2_g$ and $\sigma^2_a$. 
+We can estimate genomic heritability from Bayesian ridge regression with Wc as the same way as in RR-BLUP with Wc using the following relationship between $\sigma^2_g$ and $\sigma^2_a$. We will use the `BGLR` function in the [BGLR](https://cran.r-project.org/web/packages/BGLR/index.html) R package.
 
 \[
 \sigma^2_g = \sum^m_{j=1}(2p_j(1-p_j)) \sigma^2_a

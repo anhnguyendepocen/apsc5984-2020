@@ -1659,7 +1659,7 @@ sigma2gWcs / (sigma2gWcs + fitWcs$Ve) # 0.203</code></pre>
 </ul>
 <div id="bayesian-ridge-regression-with-wc" class="section level2">
 <h2>Bayesian ridge regression with Wc</h2>
-<p>We can estimate genomic heritability from Bayesian ridge regression with Wc as the same way as in RR-BLUP with Wc using the following relationship between <span class="math inline">\(\sigma^2_g\)</span> and <span class="math inline">\(\sigma^2_a\)</span>.</p>
+<p>We can estimate genomic heritability from Bayesian ridge regression with Wc as the same way as in RR-BLUP with Wc using the following relationship between <span class="math inline">\(\sigma^2_g\)</span> and <span class="math inline">\(\sigma^2_a\)</span>. We will use the <code>BGLR</code> function in the <a href="https://cran.r-project.org/web/packages/BGLR/index.html">BGLR</a> R package.</p>
 <p><span class="math display">\[
 \sigma^2_g = \sum^m_{j=1}(2p_j(1-p_j)) \sigma^2_a
 \]</span></p>
